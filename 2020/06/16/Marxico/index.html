@@ -30,6 +30,8 @@
   
 
   
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/gitalk/1.6.2/gitalk.css" />
+  
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
@@ -401,20 +403,27 @@ Bob--&gt;Alice: I am good thanks!</code></pre>
               <div class="comments" id="comments">
                 
                 
+  <div id="gitalk-container"></div>
   <script type="text/javascript">
-    function loadUtterances() {
-      var s = document.createElement('script');
-      s.setAttribute('src', 'https://utteranc.es/client.js');
-      s.defer = false
-      s.setAttribute('repo', 'VirgilLone/utteranc_article_comments');
-      s.setAttribute('issue-term', 'pathname');
-      
-      s.setAttribute('theme', 'github-light');
-      s.setAttribute('crossorigin', 'anonymous');
-      var e = document.getElementsByTagName('script')[0];
-      e.parentNode.insertBefore(s, e);
+    function loadGitalk(){
+      addScript('https://cdn.staticfile.org/gitalk/1.6.2/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: 'd597cc948fe41e70adcb',
+          clientSecret: '125ef2392c6c6a01159fcd458226ef11bd6a9843',
+          repo: 'utteranc_article_comments',
+          owner: 'VirgilLone',
+          admin: 'VirgilLone',
+          id: 'fe4d7b4d4e45ba23e82c204d4c217c99',
+          language: 'zh-CN',
+          perPage: 15,
+          pagerDirection: 'last',
+          createIssueManually: 'true',
+          distractionFreeMode: 'false'
+        });
+        gitalk.render('gitalk-container');
+      });
     }
-    createObserver(loadUtterances, 'comments')
+    createObserver(loadGitalk, 'gitalk-container');
   </script>
 
 
