@@ -308,28 +308,15 @@
               <div class="comments" id="comments">
                 
                 
-  <div id="gitalk-container"></div>
-  <script type="text/javascript">
-    function loadGitalk(){
-      addScript('https://cdn.staticfile.org/gitalk/1.6.2/gitalk.min.js', function () {
-        var gitalk = new Gitalk({
-          clientID: 'd597cc948fe41e70adcb',
-          clientSecret: '125ef2392c6c6a01159fcd458226ef11bd6a9843',
-          repo: 'utteranc_article_comments',
-          owner: 'VirgilLone',
-          admin: 'VirgilLone',
-          id: '9f6e6800cfae7749eb6c486619254b9c',
-          language: 'zh-CN',
-          perPage: 15,
-          pagerDirection: 'last',
-          createIssueManually: 'true',
-          distractionFreeMode: 'false'
-        });
-        gitalk.render('gitalk-container');
-      });
-    }
-    createObserver(loadGitalk, 'gitalk-container');
-  </script>
+  <div id="lv-container" data-id="city" data-uid="MTAyMC81MDUyOS8yNzAxMg==">
+    <script type="text/javascript">
+      function loadLivere() {
+        addScript('https://cdn-city.livere.com/js/embed.dist.js');
+      }
+      createObserver(loadLivere, 'lv-container');
+    </script>
+    <noscript>为正常使用来必力评论功能请允许 JavaScript 运行</noscript>
+  </div>
 
 
               </div>
