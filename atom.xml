@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Virgil&#39;s world</title>
+  <title>随便玩玩</title>
   
-  <subtitle>Virgil&#39;s world...</subtitle>
+  <subtitle>holy shit</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virgillone.github.io/"/>
-  <updated>2020-06-18T08:08:52.651Z</updated>
+  <updated>2020-06-18T08:17:47.271Z</updated>
   <id>https://virgillone.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://virgillone.github.io/posts/6255.html"/>
     <id>https://virgillone.github.io/posts/6255.html</id>
     <published>2020-06-17T02:16:00.000Z</published>
-    <updated>2020-06-18T08:08:52.651Z</updated>
+    <updated>2020-06-18T08:17:47.271Z</updated>
     
     <summary type="html">
     

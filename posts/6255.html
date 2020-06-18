@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="手把手教你用 FastDFS 构建分布式文件管理系统, Virgil&#39;s world">
-    <meta name="description" content="">
+    <meta name="keywords" content="手把手教你用 FastDFS 构建分布式文件管理系统, web,blog,java,bigdata,spark,hadoop,developer">
+    <meta name="description" content="blog,web,share,post,diary,amazing">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>手把手教你用 FastDFS 构建分布式文件管理系统 | Virgil&#39;s world</title>
+    <title>手把手教你用 FastDFS 构建分布式文件管理系统 | 随便玩玩</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -30,7 +30,7 @@
     <script src="/libs/jquery/jquery.min.js"></script>
 	<script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
 
-<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="Virgil's world" type="application/atom+xml">
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="随便玩玩" type="application/atom+xml">
 </head>
 
 
@@ -43,7 +43,7 @@
                     
                     <img src="/medias/logo.png" class="logo-img" alt="LOGO">
                     
-                    <span class="logo-span">Virgil&#39;s world</span>
+                    <span class="logo-span">随便玩玩</span>
                 </a>
             </div>
             
@@ -183,10 +183,10 @@
         
         <img src="/medias/logo.png" class="logo-img circle responsive-img">
         
-        <div class="logo-name">Virgil&#39;s world</div>
+        <div class="logo-name">随便玩玩</div>
         <div class="logo-desc">
             
-            Never really desperate, only the lost of the soul.
+            blog,web,share,post,diary,amazing
             
         </div>
     </div>
@@ -526,7 +526,7 @@
 <p>但是互联网应用访问量大、数据量大，在互联网应用中，我们必须考虑解决文件大容量存储和高性能访问的问题，而 FastDFS 就特别适合干这件事情，常见的图片存储、视频存储、文档存储等等我们都可以采用 FastDFS 来做。</p>
 <h2 id="1-3-FastDFS-架构"><a href="#1-3-FastDFS-架构" class="headerlink" title="1.3 FastDFS 架构"></a>1.3 FastDFS 架构</h2><p>作为一款分布式文件管理系统，FastDFS 主要包括四个方面的功能：</p>
 <p>文件存储<br>文件同步<br>文件上传<br>文件下载<br>这个方面的功能，基本上就能搞定我们常见的文件管理需求了。</p>
-<p>下面这是一张来自 FastDFS 官网的系统架构图：<br><img src="/images/pasted-0.png" alt="upload successful"></p>
+<p>下面这是一张来自 FastDFS 官网的系统架构图：<br><img src="/images/pasted-0.png" alt=""></p>
 <p>从上面这张图中我们可以看到，FastDFS 架构包括 Tracker 和 Storage 两部分，看名字大概就能知道，Tracker 用来追踪文件，相当于是文件的一个索引，而 Storage 则用来保存文件。</p>
 <p>我们上传文件的文件最终保存在 Storage 上，文件的元数据信息保存在 Tracker 上，通过 Tracker 可以实现对 Storage 的负载均衡。</p>
 <p>Storage 一般会搭建成集群，一个 Storage Cluster 可以由多个组构成，不同的组之间不进行通信，一个组又相当于一个小的集群，组由多个 Storage Server 组成，组内的 Storage Server 会通过连接进行文件同步来保证高可用。</p>
@@ -566,7 +566,7 @@
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi tracker.conf</span><br></pre></td></tr></tbody></table></figure>
 
 <p>修改如下配置：</p>
-<p><img src="/images/pasted-1.png" alt="upload successful"></p>
+<p><img src="/images/pasted-1.png" alt=""></p>
 <p>默认端口是 22122，可以根据实际需求修改，我这里就不改了。然后下面配置一下元数据的保存目录（注意目录要存在）。</p>
 <h5 id="5-启动"><a href="#5-启动" class="headerlink" title="5.启动"></a><strong>5.启动</strong></h5><p>接下来执行如下命令启动 Tracker：</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/fdfs_trackerd /etc/fdfs/tracker.conf start</span><br></pre></td></tr></tbody></table></figure>
@@ -772,7 +772,7 @@
     <div id="rewardModal" class="modal">
         <div class="modal-content">
             <a class="close modal-close"><i class="fas fa-times"></i></a>
-            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <h4 class="reward-title">一杯咖啡钱ok？</h4>
             <div class="reward-content">
                 <div class="reward-tabs">
                     <ul class="tabs row">
@@ -928,7 +928,7 @@ Marxico is a delicate Markdown editor for Evernote. With r
 
         var selection = window.getSelection();
         // if the selection is short let's not annoy our users.
-        if (('' + selection).length < Number.parseInt('120')) {
+        if (('' + selection).length < Number.parseInt('100')) {
             return;
         }
 
@@ -948,7 +948,7 @@ Marxico is a delicate Markdown editor for Evernote. With r
 
         var url = document.location.href;
         newdiv.innerHTML += '<br />'
-            + '来源: Virgil&#39;s world<br />'
+            + '来源: 随便玩玩<br />'
             + '文章作者: Virgil Lune<br />'
             + '文章链接: <a href="' + url + '">' + url + '</a><br />'
             + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
