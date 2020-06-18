@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Virgil&#39;s world</title>
+  
+  <subtitle>Virgil&#39;s world...</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://virgillone.github.io/"/>
+  <updated>2020-06-18T05:36:56.419Z</updated>
+  <id>https://virgillone.github.io/</id>
+  
+  <author>
+    <name>Virgil Lune</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>手把手教你用 FastDFS 构建分布式文件管理系统</title>
+    <link href="https://virgillone.github.io/2020/06/17/shou-ba-shou-jiao-ni-yong-fastdfs-gou-jian-fen-bu-shi-wen-jian-guan-li-xi-tong/"/>
+    <id>https://virgillone.github.io/2020/06/17/shou-ba-shou-jiao-ni-yong-fastdfs-gou-jian-fen-bu-shi-wen-jian-guan-li-xi-tong/</id>
+    <published>2020-06-17T02:16:00.000Z</published>
+    <updated>2020-06-18T05:36:56.419Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;说起分布式文件管理系统，大家可能很容易想到 HDFS、GFS 等系统，前者是 Hadoop 的一部分，后者则是 Google 提供的分布式文件管理系统。除了这些之外，国内淘宝和腾讯也有自己的分布式文件管理系统，都叫 TFS（Taobao File System 和
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Marxico</title>
+    <link href="https://virgillone.github.io/2020/06/16/marxico/"/>
+    <id>https://virgillone.github.io/2020/06/16/marxico/</id>
+    <published>2020-06-16T02:05:00.000Z</published>
+    <updated>2020-06-16T02:05:10.820Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Welcome-to-Marxico&quot;&gt;&lt;a href=&quot;#Welcome-to-Marxico&quot; class=&quot;headerlink&quot; title=&quot;Welcome to Marxico&quot;&gt;&lt;/a&gt;Welcome to
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://virgillone.github.io/2020/06/15/hello-world/"/>
+    <id>https://virgillone.github.io/2020/06/15/hello-world/</id>
+    <published>2020-06-15T10:21:23.000Z</published>
+    <updated>2020-06-17T06:16:12.113Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="Markdown1" scheme="https://virgillone.github.io/categories/Markdown1/"/>
+    
+    
+      <category term="Typora" scheme="https://virgillone.github.io/tags/Typora/"/>
+    
+      <category term="Markdown" scheme="https://virgillone.github.io/tags/Markdown/"/>
+    
+  </entry>
+  
+</feed>
