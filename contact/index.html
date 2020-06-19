@@ -427,6 +427,21 @@
 			
         </div>
     </div>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virgillone/cdn/libs/aplayer/APlayer.min.css">
+	<div id="aplayer"></div>
+	<script src="https://cdn.jsdelivr.net/gh/virgillone/cdn/libs/aplayer/APlayer.min.js"></script>
+	<script>
+	const app = new APlayer({
+    container: document.getElementById('aplayer'),
+    audio: [{
+        name: '天空之城',                          <!-- 歌曲名称-->
+        artist: '南京李志',                        <!-- 歌曲作者-->
+        url: '/music/天空之城.FLAC',      <!-- 歌曲路径-->
+        // cover: '/resources/music/认真的雪.jpg',  <!-- 歌曲封面图片-->
+        theme: '#46718b'                        <!-- 选中歌曲的主题-->
+    }]
+});
+</script>
 	
 </main>
 
