@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="手把手教你用 FastDFS 构建分布式文件管理系统, web,blog,java,bigdata,spark,hadoop,developer">
+    <meta name="keywords" content="Apache Spark 3.0.0 正式版终于发布了，重要特性全面解析, web,blog,java,bigdata,spark,hadoop,developer">
     <meta name="description" content="blog,web,share,post,diary,amazing">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>手把手教你用 FastDFS 构建分布式文件管理系统 | 随便玩玩</title>
+    <title>Apache Spark 3.0.0 正式版终于发布了，重要特性全面解析 | 随便玩玩</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/virgillone/cdn/source/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/virgillone/cdn/source/libs/awesome/css/all.css">
@@ -345,12 +345,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/virgillone/cdn/source/medias/featureimages/10.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/virgillone/cdn/source/medias/featureimages/11.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">手把手教你用 FastDFS 构建分布式文件管理系统</h1>
+                    <h1 class="description center-align post-title">Apache Spark 3.0.0 正式版终于发布了，重要特性全面解析</h1>
                 </div>
             </div>
         </div>
@@ -479,28 +479,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-06-17
+                    2020-06-19
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2020-06-18
+                    2020-06-19
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.5k
+                    4.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    16 分
                 </div>
                 
 
@@ -515,63 +515,95 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>说起分布式文件管理系统，大家可能很容易想到 HDFS、GFS 等系统，前者是 Hadoop 的一部分，后者则是 Google 提供的分布式文件管理系统。除了这些之外，国内淘宝和腾讯也有自己的分布式文件管理系统，都叫 TFS（Taobao File System 和 Tencent File System）。</p>
-<p>相对于上面提到的这些分布式文件管理系统而言，FastDFS 可能离我们 Java 工程师更近一些，因为文件上传这个功能太常见了，而想要搭建独立的分布式文件管理系统，FastDFS+Nginx 组合无疑是最佳方案。因此，松哥今天就来和大家简单聊一聊这个问题。</p>
-<p>如果小伙伴们还不懂在传统的开发环境下如何进行文件上传，可以参考松哥之前发的文件上传教程：</p>
-<p>Spring Boot + Vue，手把手教你做文件上传</p>
-<h1 id="1-什么是-FastDFS"><a href="#1-什么是-FastDFS" class="headerlink" title="1.什么是 FastDFS"></a>1.什么是 FastDFS</h1><h2 id="1-1-FastDFS-简介"><a href="#1-1-FastDFS-简介" class="headerlink" title="1.1 FastDFS 简介"></a>1.1 FastDFS 简介</h2><p>FastDFS 由淘宝的余庆大佬在 2008 年开源的一款轻量级分布式文件管理系统，FastDFS 用 C 语言实现，支持 Linux、FreeBSD、MacOS 等类 UNIX 系统。FastDFS 类似 google FS，属于应用级文件系统，不是通用的文件系统，只能通过专有 API 访问，目前提供了 C 和 Java SDK ，以及 PHP 扩展 SDK。</p>
-<p>这款开源软件从发布至今，历经数十年，这款开源软件的生命力依然旺盛，在业界依然备受推崇，当然这也得益于作者一直在不断完善该软件。</p>
-<p>FastDFS 专为互联网应用量身定做，解决大容量文件存储问题，追求高性能和高扩展性，它可以看做是基于文件的 key/value 存储系统，key 为文件 ID，value 为文件内容，因此称作分布式文件存储服务更为合适。</p>
-<h2 id="1-2-为什么需要-FastDFS"><a href="#1-2-为什么需要-FastDFS" class="headerlink" title="1.2 为什么需要 FastDFS"></a>1.2 为什么需要 FastDFS</h2><p>传统的企业级开发对于高并发要求不是很高，而且数据量可能也不大，在这样的环境下文件管理可能非常 Easy。</p>
-<p>但是互联网应用访问量大、数据量大，在互联网应用中，我们必须考虑解决文件大容量存储和高性能访问的问题，而 FastDFS 就特别适合干这件事情，常见的图片存储、视频存储、文档存储等等我们都可以采用 FastDFS 来做。</p>
-<h2 id="1-3-FastDFS-架构"><a href="#1-3-FastDFS-架构" class="headerlink" title="1.3 FastDFS 架构"></a>1.3 FastDFS 架构</h2><p>作为一款分布式文件管理系统，FastDFS 主要包括四个方面的功能：</p>
-<p>文件存储<br>文件同步<br>文件上传<br>文件下载<br>这个方面的功能，基本上就能搞定我们常见的文件管理需求了。</p>
-<p>下面这是一张来自 FastDFS 官网的系统架构图：<br><img src="/images/pasted-0.png" alt=""></p>
-<p>从上面这张图中我们可以看到，FastDFS 架构包括 Tracker 和 Storage 两部分，看名字大概就能知道，Tracker 用来追踪文件，相当于是文件的一个索引，而 Storage 则用来保存文件。</p>
-<p>我们上传文件的文件最终保存在 Storage 上，文件的元数据信息保存在 Tracker 上，通过 Tracker 可以实现对 Storage 的负载均衡。</p>
-<p>Storage 一般会搭建成集群，一个 Storage Cluster 可以由多个组构成，不同的组之间不进行通信，一个组又相当于一个小的集群，组由多个 Storage Server 组成，组内的 Storage Server 会通过连接进行文件同步来保证高可用。</p>
-<h1 id="2-FastDFS-安装"><a href="#2-FastDFS-安装" class="headerlink" title="2.FastDFS 安装"></a>2.FastDFS 安装</h1><p>介绍完 FastDFS 之后，相信小伙伴已经摩拳擦掌跃跃欲试了，接下来我们就来看下 FastDFS 的安装。</p>
-<p>我这里为了测试方便，就不开启多台虚拟机了，Tracker 和 Storage 我将安装在同一台服务器上。</p>
-<p>图片上传我们一般使用 FastDFS，图片上传成功之后，接下来的图片访问我们一般采用 Nginx，所以这里的安装我将从三个方面来介绍：</p>
+                <p>原计划在2019年年底发布的 Apache Spark 3.0.0 今天终于赶在下周二举办的 Spark Summit AI 会议之前正式发布了! Apache Spark 3.0.0 自2018年10月02日开发到目前已经经历了近21个月！这个版本的发布经历了两个预览版以及三次投票：</p>
 <ul>
-<li><p>Tracker 安装</p>
-</li>
-<li><p>Storage 安装</p>
-</li>
-<li><p>Nginx 安装</p>
-</li>
+<li>2019年11月06日第一次预览版，参见Preview release of Spark 3.0[1]</li>
+<li>2019年12月23日第二次预览版，参见Preview release of Spark 3.0[2]</li>
+<li>2020年03月21日 [VOTE] Apache Spark 3.0.0 RC1[3]</li>
+<li>2020年05月18日 [VOTE] Apache Spark 3.0 RC2[4]</li>
+<li>2020年06月06日 [vote] Apache Spark 3.0 RC3[5]</li>
 </ul>
-<h2 id="2-1-Tracker-安装"><a href="#2-1-Tracker-安装" class="headerlink" title="2.1 Tracker 安装"></a>2.1 Tracker 安装</h2><p>安装，我们首先需要准备一个环境两个库以及一个安装包。</p>
-<h4 id="1-一个环境"><a href="#1-一个环境" class="headerlink" title="1.一个环境"></a><strong>1.一个环境</strong></h4><p>先来看一个环境，由于 FastDFS 采用 C 语言开发，所以在安装之前，如果没有 gcc 环境，需要先安装，安装命令如下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc-c++</span><br></pre></td></tr></tbody></table></figure>
+<p>Apache Spark 3.0 增加了很多令人兴奋的新特性，包括动态分区修剪（Dynamic Partition Pruning）、自适应查询执行（Adaptive Query Execution）、加速器感知调度（Accelerator-aware Scheduling）、支持 Catalog 的数据源API（Data Source API with Catalog Supports）、SparkR 中的向量化（Vectorization in SparkR）、支持 Hadoop 3/JDK 11/Scala 2.12 等等。这个版本一共解决了 3400 多个 ISSUES。</p>
+<p><img src="/images/pasted-2.png" alt=""><br>这 3400 多个 issues 在 Spark 各个组件的分布情况如下：</p>
+<p><img src="/images/pasted-3.png" alt=""><br>Apache Spark 3.0.0 中主要特性如下：</p>
+<p><img src="/images/pasted-4.png" alt=""><br>关于这些比较重要的特性我已经在 这个分类里面进行了介绍，感兴趣的同学可以去看看。下面我们来快速看看 Spark 3.0 比较重要的新特性吧。比较全面的可以到 Spark Release 3.0.0 这里看看。</p>
+<h3 id="动态分区修剪（Dynamic-Partition-Pruning）"><a href="#动态分区修剪（Dynamic-Partition-Pruning）" class="headerlink" title="动态分区修剪（Dynamic Partition Pruning）"></a><strong>动态分区修剪（Dynamic Partition Pruning）</strong></h3><p>所谓的动态分区裁剪就是基于运行时（run time）推断出来的信息来进一步进行分区裁剪。举个例子，我们有如下的查询：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM dim_iteblog </span><br><span class="line">JOIN fact_iteblog </span><br><span class="line">ON (dim_iteblog.partcol = fact_iteblog.partcol) </span><br><span class="line">WHERE dim_iteblog.othercol &gt; 10</span><br></pre></td></tr></tbody></table></figure>
 
-<h4 id="2-两个库"><a href="#2-两个库" class="headerlink" title="2.两个库"></a><strong>2.两个库</strong></h4><p>再来看两个库，由于 FastDFS 依赖 libevent 库，安装命令如下：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install libevent</span><br></pre></td></tr></tbody></table></figure>
 
-<p>另一个库是 libfastcommon，这是 FastDFS 官方提供的，它包含了 FastDFS 运行所需要的一些基础库。</p>
-<p>libfastcommon 下载地址：<a href="https://github.com/happyfish100/libfastcommon/archive/V1.0.43.tar.gz" target="_blank" rel="noopener">https://github.com/happyfish100/libfastcommon/archive/V1.0.43.tar.gz</a></p>
-<p>将下载好的 libfastcommon 拷贝至 /usr/local/ 目录下，然后依次执行如下命令：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local</span><br><span class="line">tar -zxvf V1.0.43.tar.gz</span><br><span class="line">cd libfastcommon-1.0.43/</span><br><span class="line">./make.sh</span><br><span class="line">./make.sh install</span><br></pre></td></tr></tbody></table></figure>
 
-<h4 id="3-一个安装包"><a href="#3-一个安装包" class="headerlink" title="3.一个安装包"></a><strong>3.一个安装包</strong></h4><p>接下来我们下载 Tracker，注意，由于 Tracker 和 Storage 是相同的安装包，所以下载一次即可（2.2 小节中不用再次下载）。</p>
-<p>安装文件可以从 FastDFS 的 GitHub 仓库上下载，下载地址：<a href="https://github.com/happyfish100/fastdfs/archive/V6.06.tar.gz" target="_blank" rel="noopener">https://github.com/happyfish100/fastdfs/archive/V6.06.tar.gz</a></p>
-<p>下载成功后，将下载文件拷贝到 /usr/local 目录下，然后依次执行如下命令安装：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local</span><br><span class="line">tar -zxvf V6.06.tar.gz</span><br><span class="line">cd fastdfs-6.06/</span><br><span class="line">./make.sh</span><br><span class="line">./make.sh install</span><br></pre></td></tr></tbody></table></figure>
+<p>假设 dim_iteblog 表的 dim_iteblog.othercol &gt; 10 过滤出来的数据比较少，但是由于之前版本的 Spark 无法进行动态计算代价，所以可能会导致 fact_iteblog 表扫描出大量无效的数据。有了动态分区裁减，可以在运行的时候过滤掉 fact_iteblog 表无用的数据。经过这个优化，查询扫描的数据大大减少，性能提升了 33 倍。</p>
+<p>在 TPC-DS 基准测试中，102个查询中的60个得到2到18倍的加速。</p>
+<p><img src="/images/pasted-5.png" alt=""></p>
+<p>这个特性对应的 ISSUE 可以参见 SPARK-11150 和 SPARK-28888。过往记忆大数据公众号也在前段时间对这个特性进行了详细介绍，具体请参见<a href="http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&amp;mid=2650718656&amp;idx=1&amp;sn=57de5460e470cb9e475799b972576463&amp;chksm=887ddcb6bf0a55a0569c134bbfab39efd91fef01407df60c4e3681486856972b4e70c15a4b92&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">《Apache Spark 3.0 动态分区裁剪（Dynamic Partition Pruning）介绍》</a>和<a href="http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&amp;mid=2650718711&amp;idx=1&amp;sn=f35b18df40de865a9a29064f3ea8d45e&amp;chksm=887ddc81bf0a559776e59d08c69a17426d716df9061ca69e39a396f5c82737c216b4bc8eedfd&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">《Apache Spark 3.0 动态分区裁剪（Dynamic Partition Pruning）使用》</a>。</p>
+<h3 id="自适应查询执行（Adaptive-Query-Execution）"><a href="#自适应查询执行（Adaptive-Query-Execution）" class="headerlink" title="自适应查询执行（Adaptive Query Execution）"></a>自适应查询执行（Adaptive Query Execution）</h3><p>自适应查询执行（又称 Adaptive Query Optimisation 或者 Adaptive Optimisation）是对查询执行计划的优化，允许 Spark Planner 在运行时执行可选的执行计划，这些计划将基于运行时统计数据进行优化。</p>
+<p>早在2015年，Spark 社区就提出了自适应执行的基本想法，在 Spark 的 DAGScheduler 中增加了提交单个 map stage 的接口，并且在实现运行时调整 shuffle partition 数量上做了尝试。但目前该实现有一定的局限性，在某些场景下会引入更多的 shuffle，即更多的 stage，对于三表在同一个 stage 中做 join 等情况也无法很好的处理；而且使用当前框架很难灵活地在自适应执行中实现其他功能，例如更改执行计划或在运行时处理倾斜的 join。所以该功能一直处于实验阶段，配置参数也没有在官方文档中提及。这个想法主要来自英特尔以及百度的大牛，具体参见 SPARK-9850，对应的文章可以参见 <a href="http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&amp;mid=2650720582&amp;idx=1&amp;sn=56b63e59bf14bb23b30b240748880502&amp;chksm=887dd430bf0a5d26efcb876a12082bd3e55137cf07da0a7cbd5c8c872fb0585d3f00774ff660&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">《Apache Spark SQL自适应执行实践》</a></p>
+<p>而 Apache Spark 3.0 的 Adaptive Query Execution（AQE） 是基于 SPARK-9850 的思想而实现的，具体参见 SPARK-23128。SPARK-23128 的目标是实现一个灵活的框架以在 Spark SQL 中执行自适应执行，并支持在运行时更改 reducer 的数量。新的实现解决了前面讨论的所有限制，其他功能（如更改 join 策略和处理倾斜 join）将作为单独的功能实现，并作为插件在后面版本提供。</p>
+<p>AQE 框架目前提供了三个功能：</p>
+<ul>
+<li>动态合并 shuffle partitions；</li>
+<li>动态调整 join 策略；</li>
+<li>动态优化倾斜的 join（skew joins）。</li>
+</ul>
+<p>基于没有统计数据的 1TB TPC-DS 基准，Spark 3.0 可以使 q77 的速度提高8倍，使 q5 的速度提高2倍，而对另外26个查询的速度提高1.1倍以上。可以通过设置 SQL 配置 spark.sql.adaptive=true 来启用 AQE，这个参数默认值为 false。</p>
+<p><img src="/images/pasted-6.png" alt=""></p>
+<h3 id="加速器感知调度（Accelerator-aware-Scheduling）"><a href="#加速器感知调度（Accelerator-aware-Scheduling）" class="headerlink" title="加速器感知调度（Accelerator-aware Scheduling）"></a>加速器感知调度（Accelerator-aware Scheduling）</h3><p>如今大数据和机器学习已经有了很大的结合，在机器学习里面，因为计算迭代的时间可能会很长，开发人员一般会选择使用 GPU、FPGA 或 TPU 来加速计算。在 <a href="http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&amp;mid=2650714983&amp;idx=1&amp;sn=bf081153b923e2fbf247e0e0f91018f1&amp;chksm=887dae11bf0a2707709033021da1b20a95b73fbeeda5928c3439b6f16b9af19c37a66fe82bd1&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">Apache Hadoop 3.1 版本里面已经开始内置原生支持 GPU 和 FPGA 了</a>。作为通用计算引擎的 Spark 肯定也不甘落后，来自 Databricks、NVIDIA、Google 以及阿里巴巴的工程师们正在为 Apache Spark 添加原生的 GPU 调度支持，该方案填补了 Spark 在 GPU 资源的任务调度方面的空白，有机地融合了大数据处理和 AI 应用，扩展了 Spark 在深度学习、信号处理和各大数据应用的应用场景。这项工作的 issue 可以在 SPARK-24615 里面查看，相关的 SPIP（Spark Project Improvement Proposals） 文档可以参见 SPIP: Accelerator-aware scheduling[6]</p>
+<p><img src="/images/pasted-7.png" alt="upload successful"></p>
+<p>目前 Apache Spark 支持的资源管理器 YARN 和 Kubernetes 已经支持了 GPU。为了让 Spark 也支持 GPUs，在技术层面上需要做出两个主要改变：</p>
+<ul>
+<li>在 cluster manager 层面上，需要升级 cluster managers 来支持 GPU。并且给用户提供相关 API，使得用户可以控制 GPU 资源的使用和分配。</li>
+<li>在 Spark 内部，需要在 scheduler 层面做出修改，使得 scheduler 可以在用户 task 请求中识别 GPU 的需求，然后根据 executor 上的 GPU 供给来完成分配。</li>
+</ul>
+<p>因为让 Apache Spark 支持 GPU 是一个比较大的特性，所以项目分为了几个阶段。在 Apache Spark 3.0 版本，将支持在 standalone、 YARN 以及 Kubernetes 资源管理器下支持 GPU，并且对现有正常的作业基本没影响。对于 TPU 的支持、Mesos 资源管理器中 GPU 的支持、以及 Windows 平台的 GPU 支持将不是这个版本的目标。而且对于一张 GPU 卡内的细粒度调度也不会在这个版本支持；Apache Spark 3.0 版本将把一张 GPU 卡和其内存作为不可分割的单元。详情请参见公众号<a href="http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&amp;mid=2650716525&amp;idx=1&amp;sn=b13631e06f322e0b6c1a10f7a584788b&amp;chksm=887da41bbf0a2d0db1b069abedf72fa239212e881b9636af1a04bf583f1164822fc1b81393fa&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">《Apache Spark 3.0 将内置支持 GPU 调度》</a>。</p>
+<h3 id="Apache-Spark-DataSource-V2"><a href="#Apache-Spark-DataSource-V2" class="headerlink" title="Apache Spark DataSource V2"></a>Apache Spark DataSource V2</h3><p>Data Source API 定义如何从存储系统进行读写的相关 API 接口，比如 Hadoop 的 InputFormat/OutputFormat，Hive 的 Serde 等。这些 API 非常适合用户在 Spark 中使用 RDD 编程的时候使用。使用这些 API 进行编程虽然能够解决我们的问题，但是对用户来说使用成本还是挺高的，而且 Spark 也不能对其进行优化。为了解决这些问题，Spark 1.3 版本开始引入了 Data Source API V1，通过这个 API 我们可以很方便的读取各种来源的数据，而且 Spark 使用 SQL 组件的一些优化引擎对数据源的读取进行优化，比如列裁剪、过滤下推等等。</p>
+<p><img src="/images/pasted-8.png" alt="upload successful"></p>
+<p>Data Source API V1 为我们抽象了一系列的接口，使用这些接口可以实现大部分的场景。但是随着使用的用户增多，逐渐显现出一些问题：</p>
+<ul>
+<li>部分接口依赖 SQLContext 和 DataFrame</li>
+<li>扩展能力有限，难以下推其他算子</li>
+<li>缺乏对列式存储读取的支持</li>
+<li>缺乏分区和排序信息</li>
+<li>写操作不支持事务</li>
+<li>不支持流处理</li>
+</ul>
+<p>为了解决 Data Source V1 的一些问题，从 Apache Spark 2.3.0 版本开始，社区引入了 Data Source API V2，在保留原有的功能之外，还解决了 Data Source API V1 存在的一些问题，比如不再依赖上层 API，扩展能力增强。Data Source API V2 对应的 ISSUE 可以参见 SPARK-15689。虽然这个功能在 Apache Spark 2.x 版本就出现了，但是不是很稳定，所以社区对 Spark DataSource API V2 的稳定性工作以及新功能分别开了两个 ISSUE：SPARK-25186 以及 SPARK-22386。Spark DataSource API V2 最终稳定版以及新功能将会随着年底和 Apache Spark 3.0.0 版本一起发布，其也算是 Apache Spark 3.0.0 版本的一大新功能。</p>
+<p>更多关于 Apache Spark DataSource V2 的详细介绍请参见 <a href="http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&amp;mid=2650717658&amp;idx=1&amp;sn=722e060f32ea72415e180c19b98eb142&amp;chksm=887da0acbf0a29babfb7a9edae9f5a577b6073ce65e8c087b6a89fe6a6ac77d634fcfaa138fe&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">Apache Spark DataSource V2 介绍及入门编程指南（上）</a> 和 <a href="http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&amp;mid=2650717658&amp;idx=1&amp;sn=722e060f32ea72415e180c19b98eb142&amp;chksm=887da0acbf0a29babfb7a9edae9f5a577b6073ce65e8c087b6a89fe6a6ac77d634fcfaa138fe&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">Apache Spark DataSource V2 介绍及入门编程指南（下）</a> 两篇文章的介绍。</p>
+<h3 id="丰富的-API-和功能"><a href="#丰富的-API-和功能" class="headerlink" title="丰富的 API 和功能"></a>丰富的 API 和功能</h3><p>为了满足新的用例并简化 Spark 应用程序的开发，Apache Spark 3.0 版本提供了新的功能并增强了现有的功能。</p>
+<h4 id="增强的-pandas-UDF"><a href="#增强的-pandas-UDF" class="headerlink" title="增强的 pandas UDF"></a>增强的 pandas UDF</h4><p>Pandas UDF 最初是在 Spark 2.3 中引入的，用于扩展 PySpark 中 UDF 并将 pandas API 集成到 PySpark 应用程序中。但是，当添加更多 UDF 类型时，现有接口很难理解。为了解决这个问题，Spark 3.0 引入了带有 Python 类型提示的新 pandas UDF 接口。此版本增加了两种新的 pandas UDF 类型：iterator of series to iterator of series 和 iterator of multiple series to iterator of series，以及三个新的 pandas 函数 API：grouped map、map 和 co-grouped map。详细介绍可以参见过往记忆大数据的 Apache Spark 3.0 新的 Pandas UDF 及 Python Type Hints：<a href="https://www.iteblog.com/archives/9814.html。" target="_blank" rel="noopener">https://www.iteblog.com/archives/9814.html。</a></p>
+<h4 id="一组完整的-join-hints"><a href="#一组完整的-join-hints" class="headerlink" title="一组完整的 join hints"></a>一组完整的 join hints</h4><p>尽管社区不断提高编译器的智能性，但不能保证编译器始终可以针对每种情况做出最佳决策。Join 算法的选择基于统计和启发式算法，当编译器无法做出最佳选择时，用户仍然可以使用 join hints 来影响优化器选择更好的计划。Apache Spark 3.0 通过添加新的 hints 扩展了现有的 join hints ：SHUFFLE_MERGE、SHUFFLE_HASH 和 SHUFFLE_REPLICATE_NL</p>
+<h4 id="新的内置函数"><a href="#新的内置函数" class="headerlink" title="新的内置函数"></a>新的内置函数</h4><p>Scala API 中增了32个新的内置函数和高阶函数。在这些内置函数中，添加了一组针对 MAP 的特定内置函数[transform_key，transform_value，map_entries，map_filter，map_zip_with]，以简化对 MAP 数据类型的处理。</p>
+<h3 id="增强的监控功能"><a href="#增强的监控功能" class="headerlink" title="增强的监控功能"></a>增强的监控功能</h3><p>Apache Spark 在监控方面也包含许多增强功能，这些功能使监控更加全面和稳定。这些增强的监控功能不会对性能产生重大影响。主要可以分为以下三个地方。</p>
+<h4 id="重新设计-Structured-streaming-的-UI"><a href="#重新设计-Structured-streaming-的-UI" class="headerlink" title="重新设计 Structured streaming 的 UI"></a>重新设计 Structured streaming 的 UI</h4><p>Structured streaming 最初是在 Spark 2.0 中引入的。Spark 3.0 为监控这些流作业重新设计了 UI。这个新的 UI 提供了两组统计信息：</p>
+<ul>
+<li>已完成的流查询作业的聚合信息</li>
+<li>流查询的详细统计信息，包括 Input Rate, Process Rate, Input Rows, Batch Duration, Operation Duration 等</li>
+</ul>
+<p><img src="/images/pasted-9.png" alt="upload successful"></p>
+<h4 id="增强-EXPLAIN-命令"><a href="#增强-EXPLAIN-命令" class="headerlink" title="增强 EXPLAIN 命令"></a>增强 EXPLAIN 命令</h4><p>读取计划（Reading plans）对理解和调优查询非常重要。现有的解决方案看起来很混乱，每个算子的字符串表示可能非常宽，甚至可能被截断。Spark 3.0 版本使用一种新的格式化（FORMATTED）模式对其进行了增强，并且还提供了将计划转储到文件的功能。</p>
+<h4 id="可观察的指标"><a href="#可观察的指标" class="headerlink" title="可观察的指标"></a>可观察的指标</h4><p>连续监视数据质量的变化是管理数据管道非常需要的特性。Spark 3.0 版本为批处理和流处理应用程序引入了这种功能。可观察指标被命名为可以在查询上定义的任意聚合函数(dataframe)。一旦 dataframe 的执行到达一个完成点（例如，完成批查询），就会发出一个命名事件，其中包含自上一个完成点以来处理的数据的指标。</p>
+<h3 id="更好的-ANSI-SQL-兼容"><a href="#更好的-ANSI-SQL-兼容" class="headerlink" title="更好的 ANSI SQL 兼容"></a>更好的 ANSI SQL 兼容</h3><p>PostgreSQL 是最先进的开源数据库之一，其支持 SQL:2011 的大部分主要特性，完全符合 SQL:2011 要求的 179 个功能中，PostgreSQL 至少符合 160 个。Spark 社区目前专门开了一个 ISSUE SPARK-27764 来解决 Spark SQL 和 PostgreSQL 之间的差异，包括功能特性补齐、Bug 修改等。功能补齐包括了支持 ANSI SQL 的一些函数、区分 SQL 保留关键字以及内置函数等。这个 ISSUE 下面对应了 231 个子 ISSUE，如果这部分的 ISSUE 都解决了，那么 Spark SQL 和 PostgreSQL 或者 ANSI SQL:2011 之间的差异更小了。</p>
+<h3 id="SparkR-向量化读写"><a href="#SparkR-向量化读写" class="headerlink" title="SparkR 向量化读写"></a>SparkR 向量化读写</h3><p>Spark 是从 1.4 版本开始支持 R 语言的，但是那时候 Spark 和 R 进行交互的架构图如下：</p>
+<p><img src="/images/pasted-10.png" alt="upload successful"></p>
+<p>每当我们使用 R 语言和 Spark 集群进行交互，需要经过 JVM ，这也就无法避免数据的序列化和反序列化操作，这在数据量很大的情况下性能是十分低下的！</p>
+<p>而且 Apache Spark 已经在许多操作中进行了向量化优化（vectorization optimization），例如，内部列式格式（columnar format）、Parquet/ORC 向量化读取、Pandas UDFs 等。向量化可以大大提高性能。SparkR 向量化允许用户按原样使用现有代码，但是当他们执行 R 本地函数或将 Spark DataFrame 与 R DataFrame 互相转换时，可以将性能提高大约数千倍。这项工作可以看下 SPARK-26759。新的架构如下:</p>
+<p><img src="/images/pasted-11.png" alt="upload successful"></p>
+<p>可以看出，SparkR 向量化是利用 Apache Arrow，其使得系统之间数据的交互变得很高效，而且避免了数据的序列化和反序列化的消耗，所以采用了这个之后，SparkR 和 Spark 交互的性能得到极大提升。</p>
+<h3 id="Kafka-Streaming-includeHeaders"><a href="#Kafka-Streaming-includeHeaders" class="headerlink" title="Kafka Streaming: includeHeaders"></a>Kafka Streaming: includeHeaders</h3><p>Apache Kafka 0.11.0.0 版本支持在消息中配置一些 headers 信息，具体参见 KIP-82 - Add Record Headers，对应的 ISSUE 参见 KAFKA-4208。这些 Headers 在一些场景下很有用，Spark 3.0.0 为了满足用户的场景所以当然需要支持这个功能了，具体参见 SPARK-23539。具体使用如下</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">val df = spark </span><br><span class="line">            .readStream </span><br><span class="line">            .format("kafka") </span><br><span class="line">            .option("kafka.bootstrap.servers", "host1:port1,host2:port2") </span><br><span class="line">            .option("subscribe", "topic1")</span><br><span class="line">            .option("includeHeaders", "true")</span><br><span class="line">            .load()</span><br><span class="line"></span><br><span class="line">df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)", "headers") .as[(String, String, Map)]</span><br></pre></td></tr></tbody></table></figure>
 
-<p>安装成功后，执行如下命令，将安装目录内 conf 目录下的配置文件拷贝到 /etc/fdfs 目录下：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd conf/</span><br><span class="line">cp ./* /etc/fdfs/</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="4-配置"><a href="#4-配置" class="headerlink" title="4.配置"></a><strong>4.配置</strong></h4><p>接下来进入 /etc/fdfs/ 目录下进行配置：</p>
-<p>打开 tracker.conf 文件：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi tracker.conf</span><br></pre></td></tr></tbody></table></figure>
-
-<p>修改如下配置：</p>
-<p><img src="/images/pasted-1.png" alt=""></p>
-<p>默认端口是 22122，可以根据实际需求修改，我这里就不改了。然后下面配置一下元数据的保存目录（注意目录要存在）。</p>
-<h5 id="5-启动"><a href="#5-启动" class="headerlink" title="5.启动"></a><strong>5.启动</strong></h5><p>接下来执行如下命令启动 Tracker：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/fdfs_trackerd /etc/fdfs/tracker.conf start</span><br></pre></td></tr></tbody></table></figure>
-
-<p>如此之后，我们的 Tracker 就算安装成功了。</p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+<li>Spark on K8S：Spark 对 Kubernetes 的支持是从2.3版本开始的，Spark 2.4 得到提升，Spark 3.0 将会加入 Kerberos 以及资源动态分配的支持。</li>
+<li>Remote Shuffle Service：当前的 Shuffle 有很多问题，比如弹性差、对 NodeManager 有很大影响，不适应云环境。为了解决上面问题，将会引入 Remote Shuffle Service，具体参见 SPARK-25299</li>
+<li>支持 JDK 11：参见 SPARK-24417，之所以直接选择 JDK 11 是因为 JDK 8 即将达到 EOL（end of life），而 JDK9 和 JDK10 已经是 EOL，所以社区就跳过 JDK9 和 JDK10 而直接支持 JDK11。不过 Spark 3.0 预览版默认还是使用 JDK 1.8；</li>
+<li>移除对 Scala 2.11 的支持，默认支持 Scala 2.12，具体参见 SPARK-26132</li>
+<li>支持 Hadoop 3.2，具体参见 SPARK-23710，Hadoop 3.0 已经发布了2年了（<a href="http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&amp;mid=2650714645&amp;idx=1&amp;sn=2bd531f181d71c611d0edcdacefd0b81&amp;chksm=887daf63bf0a2675637fc34d47d7f549df23eacebd4c8a9691aa216db109b5a895139cb246e1&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">Apache Hadoop 3.0.0-beta1 正式发布，下一个版本(GA)即可在线上使用</a>），所以支持 Hadoop 3.0 也是自然的，不过 Spark 3.0 预览版默认还是使用 Hadoop 2.7.4。</li>
+<li>移除 Python 2.x 的支持：早在 2019年6月社区就有相关的讨论关于在 Spark 3.0 移除对 Python 2 的支持，目前 Spark 3.0.0 默认支持 Python 3.x ，参见 SPARK-27884。</li>
+<li>Spark Graph 支持 Cypher：Cypher 是流行的图查询语言，现在我们可以直接在 Spark 3.0 使用 Cypher。</li>
+<li>Spark event logs 支持 Roll 了，参见 <a href="http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&amp;mid=2650719561&amp;idx=1&amp;sn=c0689221eb08c17950c982dd34815ee8&amp;chksm=887dd83fbf0a512905cc69c24e91b7682e3414567b43c14447ca7eaa4d27b9ced689c805217b&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">《Spark 3.0 终于支持 event logs 滚动了》</a>。</li>
+</ul>
+<h4 id="引用链接"><a href="#引用链接" class="headerlink" title="引用链接"></a>引用链接</h4><p><code>[1]</code> Preview release of Spark 3.0: <em><a href="https://spark.apache.org/news/spark-3.0.0-preview.html" target="_blank" rel="noopener">https://spark.apache.org/news/spark-3.0.0-preview.html</a></em><br><code>[2]</code> Preview release of Spark 3.0: <em><a href="https://spark.apache.org/news/spark-3.0.0-preview2.html" target="_blank" rel="noopener">https://spark.apache.org/news/spark-3.0.0-preview2.html</a></em><br><code>[3]</code> [VOTE] Apache Spark 3.0.0 RC1: <em><a href="https://www.mail-archive.com/dev@spark.apache.org/msg25781.html" target="_blank" rel="noopener">https://www.mail-archive.com/dev@spark.apache.org/msg25781.html</a></em><br><code>[4]</code> [VOTE] Apache Spark 3.0 RC2: <em><a href="https://www.mail-archive.com/dev@spark.apache.org/msg26040.html" target="_blank" rel="noopener">https://www.mail-archive.com/dev@spark.apache.org/msg26040.html</a></em><br><code>[5]</code> [vote] Apache Spark 3.0 RC3: <em><a href="https://www.mail-archive.com/dev@spark.apache.org/msg26119.html" target="_blank" rel="noopener">https://www.mail-archive.com/dev@spark.apache.org/msg26119.html</a></em></p>
+<p><code>[6]</code> <a href="https://spark.apache.org/releases/spark-release-3-0-0.html" target="_blank" rel="noopener">https://spark.apache.org/releases/spark-release-3-0-0.html</a></p>
+<p><code>[7]</code> SPIP: Accelerator-aware scheduling: <em><a href="https://issues.apache.org/jira/secure/attachment/12960252/SPIP_%20Accelerator-aware%20scheduling.pdf" target="_blank" rel="noopener">https://issues.apache.org/jira/secure/attachment/12960252/SPIP_%20Accelerator-aware%20scheduling.pdf</a></em></p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -615,7 +647,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://virgillone.github.io/posts/6255.html">https://virgillone.github.io/posts/6255.html</a>
+                    <a href="https://virgillone.github.io/posts/18fa.html">https://virgillone.github.io/posts/18fa.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -840,9 +872,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/posts/18fa.html">
                     <div class="card-image">
@@ -860,9 +893,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-06-19
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-19
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -871,6 +904,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -881,30 +915,29 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/1e0d.html">
+                <a href="/posts/6255.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn/source/medias/featureimages/5.jpg" class="responsive-img" alt="Marxico">
+                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn/source/medias/featureimages/10.jpg" class="responsive-img" alt="手把手教你用 FastDFS 构建分布式文件管理系统">
                         
-                        <span class="card-title">Marxico</span>
+                        <span class="card-title">手把手教你用 FastDFS 构建分布式文件管理系统</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Welcome to Marxico@(Sample notebook)[Marxico|Manual|Markdown]
-Marxico is a delicate Markdown editor for Evernote. With r
+                            说起分布式文件管理系统，大家可能很容易想到 HDFS、GFS 等系统，前者是 Hadoop 的一部分，后者则是 Google 提供的分布式文件管理系统。除了这些之外，国内淘宝和腾讯也有自己的分布式文件管理系统，都叫 TFS（Taobao F
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-16
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-17
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
-                            John Doe
+                            Virgil Lune
                             
                         </span>
                     </div>
