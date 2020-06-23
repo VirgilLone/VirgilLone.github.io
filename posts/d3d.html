@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Marxico, web,blog,java,bigdata,spark,hadoop,developer">
+    <meta name="keywords" content="零拷贝技术sendfile, web,blog,java,bigdata,spark,hadoop,developer">
     <meta name="description" content="blog,web,share,post,diary,amazing">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Marxico | 山阴路的夏天</title>
+    <title>零拷贝技术sendfile | 山阴路的夏天</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/virgillone/cdn/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/virgillone/cdn/libs/awesome/css/all.css">
@@ -347,12 +347,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/5.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/1.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Marxico</h1>
+                    <h1 class="description center-align post-title">零拷贝技术sendfile</h1>
                 </div>
             </div>
         </div>
@@ -467,9 +467,13 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Linux/">
+                                <span class="chip bg-color">Linux</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -481,28 +485,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-06-16
+                    2020-06-23
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2020-06-18
+                    2020-06-23
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    785
+                    2.9k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    4 分
+                    10 分
                 </div>
                 
 
@@ -517,96 +521,59 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="Welcome-to-Marxico"><a href="#Welcome-to-Marxico" class="headerlink" title="Welcome to Marxico"></a>Welcome to Marxico</h1><p>@(Sample notebook)[Marxico|Manual|Markdown]</p>
-<p><strong>Marxico</strong> is a delicate Markdown editor for Evernote. With reliable storage and sync powered by Evernote, <strong>Marxico</strong> offers greate writing experience. </p>
+                <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在了解零拷贝之前，我们先来看看标准的的I/O操作..</p>
+<p><strong>1.传统IO的原理</strong><br> 标准 I/O又被称作缓存 I/O ，大多数文件系统的默认 I/O 操作都是缓存 I/O。在 Linux 的缓存 I/O 机制中，操作系统会将 I/O 的数据先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="/images/pasted-14.png" alt="传统IO的原理"></p>
+<p>缓存 I/O 有以下这些优点：</p>
 <ul>
-<li><strong>Versatile</strong> - supporting code highlight, <em>LaTeX</em> &amp; flow charts,  inserting images &amp; attachments by all means.</li>
-<li><strong>Exquisite</strong> -  neat but powerful editor, featuring offline docs, live preview, and offering the <a href="http://marxi.co/client_en" target="_blank" rel="noopener">desktop client</a> and offline <a href="https://chrome.google.com/webstore/detail/kidnkfckhbdkfgbicccmdggmpgogehop" target="_blank" rel="noopener">Chrome App</a>.</li>
-<li><strong>Sophisticated</strong> - deeply integrated with Evernote, supporting notebook &amp; tags, two-way bind editing.   </li>
+<li>缓存 I/O 使用了操作系统内核缓冲区，在一定程度上分离了应用程序空间和实际的物理设备。</li>
+<li>缓存 I/O 可以减少读盘的次数，从而提高性能。</li>
 </ul>
+<p>当应用程序尝试读取某块数据的时候，如果这块数据已经存放在了内核的缓冲区中，那么这块数据就可以立即返回给应用程序，而不需要经过实际的物理读盘操作。当然，如果数据在应用程序读取之前并未被存放在内核的缓冲区中，那么就需要先将数据从磁盘读到页缓存中去。</p>
+<p>对于写操作来说，应用程序也会将数据先写到内核的缓冲区中去，数据是否被立即写到磁盘上去取决于应用程序所采用的写操作机制：<br> 如果用户采用的是同步写机制（ synchronous writes ）, 那么数据会立即被写回到磁盘上，应用程序会一直等到数据被写完为止；<br> 如果用户采用的是延迟写机制（ deferred writes ），那么应用程序就完全不需要等到数据全部被写回到磁盘，数据只要被写到页缓存中(内核的缓冲区)去就可以了。在延迟写机制的情况下，操作系统会定期地将放在页缓存中的数据刷到磁盘上。与异步写机制（ asynchronous writes ）不同的是，延迟写机制在数据完全写到磁盘上的时候不会通知应用程序，而异步写机制在数据完全写到磁盘上的时候是会返回给应用程序的。所以延迟写机制本身是存在数据丢失的风险的，而异步写机制则不会有这方面的担心。</p>
+<p><strong>2.传统IO的缺点</strong><br> 在缓存 I/O 机制中，DMA 方式可以将数据直接从磁盘读到页缓存中，或者将数据从页缓存直接写回到磁盘上，而不能直接在应用程序地址空间和磁盘之间进行数据传输，这样的话，数据在传输过程中需要在应用程序地址空间和页缓存之间进行多次数据拷贝操作，这些数据拷贝操作所带来的 CPU 以及内存开销是非常大的。</p>
+<p>当然也可以采用直接 I/O 技术来满足自缓存应用程序（ self-caching applications）的需求。<br>具体描述可以看这篇博客：<a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.ibm.com%2Fdeveloperworks%2Fcn%2Flinux%2Fl-cn-directio%2Findex.html" target="_blank" rel="noopener">Linux 中直接 I/O 机制的介绍</a></p>
+<h3 id="一-为什么需要零拷贝技术"><a href="#一-为什么需要零拷贝技术" class="headerlink" title="一.为什么需要零拷贝技术?"></a>一.为什么需要零拷贝技术?</h3><p>如今，很多网络服务器都是基于客户端 - 服务器这一模型的。在这种模型中，客户端向服务器端请求数据或者服务；服务器端则需要响应客户端发出的请求，并为客户端提供它所需要的数据。随着网络服务的逐渐普及，video 这类应用程序发展迅速。当今的计算机系统已经具备足够的能力去处理 video 这类应用程序对客户端所造成的重负荷，但是对于服务器端来说，它应付由 video 这类应用程序引起的网络通信量就显得捉襟见肘了。而且，客户端的数量增长迅速，那么服务器端就更容易成为性能瓶颈。而对于负荷很重的服务器来说，操作系统通常都是引起性能瓶颈的罪魁祸首。举个例子来说，当数据“写”操作或者数据“发送”操作的系统调用发出时，操作系统通常都会将数据从应用程序地址空间的缓冲区拷贝到操作系统内核的缓冲区中去。操作系统这样做的好处是接口简单，但是却在很大程度上损失了系统性能，因为这种数据拷贝操作不单需要占用 CPU 时间片，同时也需要占用额外的内存带宽。</p>
+<p>一般来说，客户端通过网络接口卡向服务器端发送请求，操作系统将这些客户端的请求传递给服务器端应用程序，服务器端应用程序会处理这些请求，请求处理完成以后，操作系统还需要将处理得到的结果通过网络适配器传递回去。</p>
+<h3 id="二-什么是零拷贝技术？"><a href="#二-什么是零拷贝技术？" class="headerlink" title="二.什么是零拷贝技术？"></a>二.什么是零拷贝技术？</h3><p>简单一点来说，零拷贝就是一种避免 CPU 将数据从一块存储拷贝到另外一块存储的技术。</p>
+<p>零拷贝技术可以减少数据拷贝和共享总线操作的次数，消除传输数据在存储器之间不必要的中间拷贝次数，从而有效地提高数据传输效率。</p>
+<p>而且，零拷贝技术减少了用户应用程序地址空间和操作系统内核地址空间之间因为上下文切换而带来的开销。进行大量的数据拷贝操作其实是一件简单的任务，从操作系统的角度来说，如果 CPU 一直被占用着去执行这项简单的任务，那么这将会是很浪费资源的；如果有其他比较简单的系统部件可以代劳这件事情，从而使得 CPU 解脱出来可以做别的事情，那么系统资源的利用则会更加有效。</p>
+<p><strong>零拷贝技术的要点：</strong></p>
+<ul>
+<li>避免操作系统内核缓冲区之间进行数据拷贝操作。</li>
+<li>避免操作系统内核和用户应用程序地址空间这两者之间进行数据拷贝操作。</li>
+<li>用户应用程序可以避开操作系统直接访问硬件存储。</li>
+<li>数据传输尽量让 DMA 来做。</li>
+</ul>
+<p>DMA：是指外部设备不通过CPU而直接与系统内存交换数据的接口技术。</p>
+<p><strong>零拷贝技术分类</strong><br> Linux 中的零拷贝技术主要有下面这几种：</p>
+<ul>
+<li>直接 I/O</li>
+<li>mmap</li>
+<li>sendfile</li>
+<li>splice</li>
+</ul>
+<p>本文主要介绍sendfile这种零拷贝技术..</p>
+<h3 id="三-sendfile实现零拷贝的原理"><a href="#三-sendfile实现零拷贝的原理" class="headerlink" title="三.sendfile实现零拷贝的原理"></a>三.sendfile实现零拷贝的原理</h3><p><strong>1.描述</strong><br> sendfile系统调用在两个文件描述符之间直接传递数据(完全在内核中操作)，从而避免了数据在内核缓冲区和用户缓冲区之间的拷贝，操作效率很高，被称之为零拷贝。</p>
+<p><strong>2.原理</strong><br> sendfile() 系统调用利用 DMA 引擎将文件中的数据拷贝到操作系统内核缓冲区中，然后数据被拷贝到与 socket 相关的内核缓冲区中去。接下来，DMA 引擎将数据从内核 socket 缓冲区中拷贝到协议引擎中去。</p>
+<p>sendfile() 系统调用不需要将数据拷贝或者映射到应用程序地址空间中去，所以 sendfile() 只是<strong>适用于应用程序地址空间不需要对所访问数据进行处理</strong>的情况。因为 sendfile 传输的数据没有越过用户应用程序 / 操作系统内核的边界线，所以 sendfile () 也极大地减少了存储管理的开销。</p>
+<p>简单归纳上述的过程：</p>
+<ul>
+<li>sendfile系统调用利用DMA引擎将文件数据拷贝到内核缓冲区，之后数据被拷贝到内核socket缓冲区中</li>
+<li>DMA引擎将数据从内核socket缓冲区拷贝到协议引擎中</li>
+</ul>
+<p>这里没有用户态和内核态之间的切换，也没有内核缓冲区和用户缓冲区之间的拷贝，大大提升了传输性能。</p>
+<h3 id="四-带有-DMA-收集拷贝功能的-sendfile"><a href="#四-带有-DMA-收集拷贝功能的-sendfile" class="headerlink" title="四.带有 DMA 收集拷贝功能的 sendfile"></a>四.带有 DMA 收集拷贝功能的 sendfile</h3><p>上面介绍的 sendfile() 技术在进行数据传输仍然还需要一次多余的数据拷贝操作，通过引入一点硬件上的帮助，这仅有的一次数据拷贝操作也可以避免。为了避免操作系统内核造成的数据副本，需要用到一个<strong>支持收集操作的网络接口</strong>。主要的方式是待传输的数据可以分散在存储的不同位置上，而不需要在连续存储中存放。这样一来，从文件中读出的数据就根本不需要被拷贝到 socket 缓冲区中去，而只是需要将缓冲区描述符传到网络协议栈中去，之后其在缓冲区中建立起数据包的相关结构，然后通过 DMA 收集拷贝功能将所有的数据结合成一个网络数据包。网卡的 DMA 引擎会在一次操作中从多个位置读取包头和数据。Linux 2.4 版本中的 socket 缓冲区就可以满足这种条件，这种方法不但减少了因为多次上下文切换所带来开销，同时也减少了处理器造成的数据副本的个数。对于用户应用程序来说，代码没有任何改变。</p>
+<p><strong>主要过程如下：</strong><br> 首先，sendfile() 系统调用利用 DMA 引擎将文件内容拷贝到内核缓冲区去；然后，将带有文件位置和长度信息的缓冲区描述符添加到 socket 缓冲区中去，此过程不需要将数据从操作系统内核缓冲区拷贝到 socket 缓冲区中，DMA 引擎会将数据直接从内核缓冲区拷贝到协议引擎中去，这样就避免了最后一次数据拷贝。</p>
+<h3 id="五-总结"><a href="#五-总结" class="headerlink" title="五.总结"></a>五.总结</h3><p>上述的两种几种I/O操作对比：</p>
+<p><strong>1.传统I/O</strong><br> 硬盘—&gt;内核缓冲区—&gt;用户缓冲区—&gt;内核socket缓冲区—&gt;协议引擎</p>
+<p><strong>2.sendfile</strong><br> 硬盘—&gt;内核缓冲区—&gt;内核socket缓冲区—&gt;协议引擎</p>
+<p><strong>3.sendfile（ DMA 收集拷贝）</strong><br> 硬盘—&gt;内核缓冲区—&gt;协议引擎</p>
 <hr>
-<p>[TOC]</p>
-<h2 id="Introducing-Markdown"><a href="#Introducing-Markdown" class="headerlink" title="Introducing Markdown"></a>Introducing Markdown</h2><blockquote>
-<p>Markdown is a plain text formatting syntax designed to be converted to HTML. Markdown is popularly used as format for readme files, … or in text editors for the quick creation of rich text documents.  - <a href="http://en.wikipedia.org/wiki/Markdown" target="_blank" rel="noopener">Wikipedia</a></p>
-</blockquote>
-<p>As showed in this manual, it uses hash(#) to identify headings, emphasizes some text to be <strong>bold</strong> or <em>italic</em>. You can insert a <a href="http://www.example.com" target="_blank" rel="noopener">link</a> , or a footnote[^demo]. Serveral advanced syntax are listed below, please press <code>Ctrl + /</code> to view Markdown cheatsheet.</p>
-<h3 id="Code-block"><a href="#Code-block" class="headerlink" title="Code block"></a>Code block</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@requires_authorization</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">somefunc</span><span class="params">(param1=<span class="string">''</span>, param2=<span class="number">0</span>)</span>:</span></span><br><span class="line">    <span class="string">'''A docstring'''</span></span><br><span class="line">    <span class="keyword">if</span> param1 &gt; param2: <span class="comment"># interesting</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Greater'</span></span><br><span class="line">    <span class="keyword">return</span> (param2 - param1 + <span class="number">1</span>) <span class="keyword">or</span> <span class="literal">None</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>message = <span class="string">'''interpreter</span></span><br><span class="line"><span class="string"><span class="meta">... </span>prompt'''</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="LaTeX-expression"><a href="#LaTeX-expression" class="headerlink" title="LaTeX expression"></a>LaTeX expression</h3><p>$$    x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} $$</p>
-<h3 id="Table"><a href="#Table" class="headerlink" title="Table"></a>Table</h3><table>
-<thead>
-<tr>
-<th align="left">Item</th>
-<th align="right">Value</th>
-<th align="center">Qty</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Computer</td>
-<td align="right">1600 USD</td>
-<td align="center">5</td>
-</tr>
-<tr>
-<td align="left">Phone</td>
-<td align="right">12 USD</td>
-<td align="center">12</td>
-</tr>
-<tr>
-<td align="left">Pipe</td>
-<td align="right">1 USD</td>
-<td align="center">234</td>
-</tr>
-</tbody></table>
-<h3 id="Diagrams"><a href="#Diagrams" class="headerlink" title="Diagrams"></a>Diagrams</h3><h4 id="Flow-charts"><a href="#Flow-charts" class="headerlink" title="Flow charts"></a>Flow charts</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">st=&gt;start: Start</span><br><span class="line">e=&gt;end</span><br><span class="line">op=&gt;operation: My Operation</span><br><span class="line">cond=&gt;condition: Yes or No?</span><br><span class="line"></span><br><span class="line">st-&gt;op-&gt;cond</span><br><span class="line">cond(yes)-&gt;e</span><br><span class="line">cond(no)-&gt;op</span><br></pre></td></tr></tbody></table></figure>
-<h4 id="Sequence-diagrams"><a href="#Sequence-diagrams" class="headerlink" title="Sequence diagrams"></a>Sequence diagrams</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Alice-&gt;Bob: Hello Bob, how are you?</span><br><span class="line">Note right of Bob: Bob thinks</span><br><span class="line">Bob--&gt;Alice: I am good thanks!</span><br></pre></td></tr></tbody></table></figure>
-
-<blockquote>
-<p><strong>Note:</strong> You can find more information:</p>
-</blockquote>
-<blockquote>
-<ul>
-<li>about <strong>Sequence diagrams</strong> syntax <a href="http://bramp.github.io/js-sequence-diagrams/" target="_blank" rel="noopener">here</a>,</li>
-<li>about <strong>Flow charts</strong> syntax <a href="http://adrai.github.io/flowchart.js/" target="_blank" rel="noopener">here</a>.</li>
-</ul>
-</blockquote>
-<h3 id="Checkbox"><a href="#Checkbox" class="headerlink" title="Checkbox"></a>Checkbox</h3><p>You can use <code>- [ ]</code> and <code>- [x]</code> to create checkboxes, for example:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Item1</li>
-<li><input disabled="" type="checkbox"> Item2</li>
-<li><input disabled="" type="checkbox"> Item3</li>
-</ul>
-<blockquote>
-<p><strong>Note:</strong> Currently it is only partially supported. You can’t toggle checkboxes in Evernote. You can only modify the Markdown in Marxico to do that. Next version will fix this.  </p>
-</blockquote>
-<h3 id="Dancing-with-Evernote"><a href="#Dancing-with-Evernote" class="headerlink" title="Dancing with Evernote"></a>Dancing with Evernote</h3><h4 id="Notebook-amp-Tags"><a href="#Notebook-amp-Tags" class="headerlink" title="Notebook &amp; Tags"></a>Notebook &amp; Tags</h4><p><strong>Marxico</strong> add <code>@(Notebook)[tag1|tag2|tag3]</code> syntax to select notebook and set tags for the note. After typing <code>@(</code>, the notebook list would appear, please select one from it.  </p>
-<h4 id="Title"><a href="#Title" class="headerlink" title="Title"></a>Title</h4><p><strong>Marxico</strong> would adopt the first heading encountered as the note title. For example, in this manual the first line <code>Welcome to Marxico</code> is the title.</p>
-<h4 id="Quick-Editing"><a href="#Quick-Editing" class="headerlink" title="Quick Editing"></a>Quick Editing</h4><p>Note saved by <strong>Marxico</strong> in Evernote would have a red ribbon button on the top-right corner. Click it and it would bring you back to <strong>Marxico</strong> to edit the note. </p>
-<blockquote>
-<p><strong>Note:</strong> Currently <strong>Marxico</strong> is unable to detect and merge any modifications in Evernote by user. Please go back to <strong>Marxico</strong> to edit.</p>
-</blockquote>
-<h4 id="Data-Synchronization"><a href="#Data-Synchronization" class="headerlink" title="Data Synchronization"></a>Data Synchronization</h4><p>While saving rich HTML content in Evernote, <strong>Marxico</strong> puts the Markdown text in a hidden area of the note, which makes it possible to get the original text in <strong>Marxico</strong> and edit it again. This is a really brilliant design because:</p>
-<ul>
-<li>it is beyond just one-way exporting HTML which other services do;</li>
-<li>and it avoids privacy and security problems caused by storing content in a intermediate server. </li>
-</ul>
-<blockquote>
-<p><strong>Privacy Statement: All of your notes data are saved in Evernote. Marxico doesn’t save any of them.</strong> </p>
-</blockquote>
-<h4 id="Offline-Storage"><a href="#Offline-Storage" class="headerlink" title="Offline Storage"></a>Offline Storage</h4><p><strong>Marxico</strong> stores your unsynchronized content locally in browser storage, so no worries about network and broswer crash. It also keeps the recent file list you’ve edited in <code>Document Management(Ctrl + O)</code>.</p>
-<blockquote>
-<p><strong>Note:</strong> Although browser storage is reliable in the most time, Evernote is born to do that. So please sync the document regularly while writing.</p>
-</blockquote>
-<h2 id="Shortcuts"><a href="#Shortcuts" class="headerlink" title="Shortcuts"></a>Shortcuts</h2><p>Help    <code>Ctrl + /</code><br>Sync Doc    <code>Ctrl + S</code><br>Create Doc    <code>Ctrl + Alt + N</code><br>Maximize Editor    <code>Ctrl + Enter</code><br>Preview Doc <code>Ctrl + Alt + Enter</code><br>Doc Management    <code>Ctrl + O</code><br>Menu    <code>Ctrl + M</code></p>
-<p>Bold    <code>Ctrl + B</code><br>Insert Image    <code>Ctrl + G</code><br>Insert Link    <code>Ctrl + L</code><br>Convert Heading    <code>Ctrl + H</code></p>
-<h2 id="About-Pro"><a href="#About-Pro" class="headerlink" title="About Pro"></a>About Pro</h2><p><strong>Marixo</strong> offers a free trial of 10 days. After that, you need to <a href="http://marxi.co/purchase.html" target="_blank" rel="noopener">purchase</a> the Pro service. Otherwise, you would not be able to sync new notes. Previous notes can be edited and synced all the time.</p>
-<h2 id="Credits"><a href="#Credits" class="headerlink" title="Credits"></a>Credits</h2><p><strong>Marxico</strong> was first built upon <a href="http://dillinger.io" target="_blank" rel="noopener">Dillinger</a>, and the newest version is almost based on the awesome <a href="http://stackedit.io" target="_blank" rel="noopener">StackEdit</a>. Acknowledgments to them and other incredible open source projects!</p>
-<h2 id="Feedback-amp-Bug-Report"><a href="#Feedback-amp-Bug-Report" class="headerlink" title="Feedback &amp; Bug Report"></a>Feedback &amp; Bug Report</h2><ul>
-<li>Twitter: <a href="https://twitter.com/gock2" target="_blank" rel="noopener">@gock2</a></li>
-<li>Email: <a href="mailto:hustgock@gmail.com">hustgock@gmail.com</a></li>
-</ul>
-<hr>
-<p>Thank you for reading this manual. Now please press <code>Ctrl + M</code> and click <code>Link with Evernote</code>. Enjoy your <strong>Marxico</strong> journey!</p>
-<p>[^demo]: This is a demo footnote. Read the <a href="https://github.com/fletcher/MultiMarkdown/wiki/MultiMarkdown-Syntax-Guide#footnotes" target="_blank" rel="noopener">MultiMarkdown Syntax Guide</a> to learn more. Note that Evernote disables ID attributes in its notes , so <code>footnote</code> and <code>TOC</code> are not actually working. </p>
+<p><strong>Tips:用户态和内核态切换的代价在哪？</strong></p>
+<p>首先，用户态一个进程，内核态一个进程，切换就要进行进程间的切换。<br> 拿系统调用举例来说，系统调用一般都需要保存用户程序得上下文(context), 在进入内核得时候需要保存用户态得寄存器，在内核态返回用户态得时候会恢复这些寄存器得内容。这是一个开销的地方。</p>
+<p>如果需要在不同用户程序间切换的话，那么还要更新cr3寄存器，这样会更换每个程序的虚拟内存到物理内存映射表的地址，也是一个比较高负担的操作。</p>
+<p>而且内核代码对用户不信任，需要进行额外的检查。系统调用的返回过程有很多额外工作，比如检查是否需要调度等。</p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -640,7 +607,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="/about" rel="external nofollow noreferrer">John Doe</a>
+                    <a href="/about" rel="external nofollow noreferrer">Virgil Lune</a>
                 </span>
             </div>
             <div class="reprint__type">
@@ -650,7 +617,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://virgillone.github.io/posts/1e0d.html">https://virgillone.github.io/posts/1e0d.html</a>
+                    <a href="https://virgillone.github.io/posts/d3d.html">https://virgillone.github.io/posts/d3d.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -663,7 +630,7 @@
                     本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
                     许可协议。转载请注明来源
-                    <a href="/about" target="_blank">John Doe</a>
+                    <a href="/about" target="_blank">Virgil Lune</a>
                     !
                 </span>
             </div>
@@ -687,7 +654,11 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/Linux/">
+                                    <span class="chip bg-color">Linux</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -879,32 +850,49 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/6255.html">
+                <a href="/posts/8c27.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/10.jpg" class="responsive-img" alt="手把手教你用 FastDFS 构建分布式文件管理系统">
+                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/23.jpg" class="responsive-img" alt="详解Java中4种IO模型">
                         
-                        <span class="card-title">手把手教你用 FastDFS 构建分布式文件管理系统</span>
+                        <span class="card-title">详解Java中4种IO模型</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            说起分布式文件管理系统，大家可能很容易想到 HDFS、GFS 等系统，前者是 Hadoop 的一部分，后者则是 Google 提供的分布式文件管理系统。除了这些之外，国内淘宝和腾讯也有自己的分布式文件管理系统，都叫 TFS（Taobao F
+                            同步、异步、阻塞、非阻塞都是和I/O（输入输出）有关的概念，最简单的文件读取就是I/O操作。而在文件读取这件事儿上，可以有多种方式。
+本篇会先介绍一下I/O的基本概念，通过一个生活例子来分别解释下这几种I/O模型，以及Java支持的I/O模
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-06-17
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-06-23
                         </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Virgil Lune
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/JAVA/" class="post-category">
+                                    JAVA
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Linux/">
+                        <span class="chip bg-color">Linux</span>
+                    </a>
+                    
+                    <a href="/tags/IO/">
+                        <span class="chip bg-color">IO</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -916,31 +904,32 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/3eeb.html">
+                <a href="/posts/4129.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/15.jpg" class="responsive-img" alt="kafka为什么这么快？">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">kafka为什么这么快？</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hex
+                            Kafka的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，因为寻址会比较消耗时间，但是实际上，Kafka的特性之一就是高吞吐率。
+即使是普通的服务器，Kafka也可以轻松支持每秒百万级的写入请求，超过了大部分的消息中间
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-15
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-23
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Markdown1/" class="post-category">
-                                    Markdown1
+                            <a href="/categories/bigdata/" class="post-category">
+                                    bigdata
                                 </a>
                             
                             
@@ -950,12 +939,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Typora/">
-                        <span class="chip bg-color">Typora</span>
-                    </a>
-                    
-                    <a href="/tags/Markdown/">
-                        <span class="chip bg-color">Markdown</span>
+                    <a href="/tags/kafka/">
+                        <span class="chip bg-color">kafka</span>
                     </a>
                     
                 </div>
@@ -1199,7 +1184,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">8.7k</span>&nbsp;字
+                class="white-color">14.1k</span>&nbsp;字
             
             
             

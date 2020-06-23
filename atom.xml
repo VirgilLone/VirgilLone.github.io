@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virgillone.github.io/"/>
-  <updated>2020-06-23T07:40:03.069Z</updated>
+  <updated>2020-06-23T08:19:30.989Z</updated>
   <id>https://virgillone.github.io/</id>
   
   <author>
@@ -17,11 +17,68 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>详解Java中4种IO模型</title>
+    <link href="https://virgillone.github.io/posts/8c27.html"/>
+    <id>https://virgillone.github.io/posts/8c27.html</id>
+    <published>2020-06-23T08:11:41.000Z</published>
+    <updated>2020-06-23T08:19:30.989Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;同步、异步、阻塞、非阻塞都是和I/O（输入输出）有关的概念，最简单的文件读取就是I/O操作。而在文件读取这件事儿上，可以有多种方式。&lt;/p&gt;
+&lt;p&gt;本篇会先介绍一下I/O的基本概念，通过一个生活例子来分别解释下这几种I/O模型，以及Java支持的I/O模型。&lt;/p&gt;
+&lt;h2
+        
+      
+    
+    </summary>
+    
+    
+      <category term="JAVA" scheme="https://virgillone.github.io/categories/JAVA/"/>
+    
+    
+      <category term="Linux" scheme="https://virgillone.github.io/tags/Linux/"/>
+    
+      <category term="IO" scheme="https://virgillone.github.io/tags/IO/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>零拷贝技术sendfile</title>
+    <link href="https://virgillone.github.io/posts/d3d.html"/>
+    <id>https://virgillone.github.io/posts/d3d.html</id>
+    <published>2020-06-23T07:49:41.000Z</published>
+    <updated>2020-06-23T07:53:22.065Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;在了解零拷贝之前，我们先来看看标准的的I/O操作..&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1.传统IO的原理&lt;/strong&gt;&lt;br&gt; 标准
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="Linux" scheme="https://virgillone.github.io/tags/Linux/"/>
+    
+  </entry>
+  
+  <entry>
     <title>kafka为什么这么快？</title>
     <link href="https://virgillone.github.io/posts/4129.html"/>
     <id>https://virgillone.github.io/posts/4129.html</id>
     <published>2020-06-23T07:27:51.000Z</published>
-    <updated>2020-06-23T07:40:03.069Z</updated>
+    <updated>2020-06-23T08:23:32.523Z</updated>
     
     <summary type="html">
     
@@ -37,6 +94,10 @@
     </summary>
     
     
+      <category term="bigdata" scheme="https://virgillone.github.io/categories/bigdata/"/>
+    
+    
+      <category term="kafka" scheme="https://virgillone.github.io/tags/kafka/"/>
     
   </entry>
   
@@ -87,11 +148,11 @@
   </entry>
   
   <entry>
-    <title>Marxico</title>
-    <link href="https://virgillone.github.io/posts/1e0d.html"/>
-    <id>https://virgillone.github.io/posts/1e0d.html</id>
-    <published>2020-06-16T02:05:00.000Z</published>
-    <updated>2020-06-18T06:50:01.383Z</updated>
+    <title>letter</title>
+    <link href="https://virgillone.github.io/posts/fbb5.html"/>
+    <id>https://virgillone.github.io/posts/fbb5.html</id>
+    <published>2020-05-19T21:20:00.000Z</published>
+    <updated>2020-06-23T08:45:43.441Z</updated>
     
     <summary type="html">
     
@@ -99,42 +160,17 @@
       
         
         
-          &lt;h1 id=&quot;Welcome-to-Marxico&quot;&gt;&lt;a href=&quot;#Welcome-to-Marxico&quot; class=&quot;headerlink&quot; title=&quot;Welcome to Marxico&quot;&gt;&lt;/a&gt;Welcome to
+          &lt;h1 id=&quot;这是写给陈怡宝的信&quot;&gt;&lt;a href=&quot;#这是写给陈怡宝的信&quot; class=&quot;headerlink&quot; title=&quot;这是写给陈怡宝的信&quot;&gt;&lt;/a&gt;这是写给陈怡宝的信&lt;/h1&gt;&lt;p&gt;asas&lt;/p&gt;
+&lt;script&gt;
+       
         
       
     
     </summary>
     
     
+      <category term="xxx" scheme="https://virgillone.github.io/categories/xxx/"/>
     
-  </entry>
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="https://virgillone.github.io/posts/3eeb.html"/>
-    <id>https://virgillone.github.io/posts/3eeb.html</id>
-    <published>2020-06-15T10:21:23.000Z</published>
-    <updated>2020-06-18T06:49:29.383Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a
-        
-      
-    
-    </summary>
-    
-    
-      <category term="Markdown1" scheme="https://virgillone.github.io/categories/Markdown1/"/>
-    
-    
-      <category term="Typora" scheme="https://virgillone.github.io/tags/Typora/"/>
-    
-      <category term="Markdown" scheme="https://virgillone.github.io/tags/Markdown/"/>
     
   </entry>
   
