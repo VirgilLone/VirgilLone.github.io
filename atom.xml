@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virgillone.github.io/"/>
-  <updated>2020-06-19T04:35:09.990Z</updated>
+  <updated>2020-06-23T07:40:03.069Z</updated>
   <id>https://virgillone.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>kafka为什么这么快？</title>
+    <link href="https://virgillone.github.io/posts/4129.html"/>
+    <id>https://virgillone.github.io/posts/4129.html</id>
+    <published>2020-06-23T07:27:51.000Z</published>
+    <updated>2020-06-23T07:40:03.069Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;Kafka的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，因为寻址会比较消耗时间，但是实际上，Kafka的特性之一就是高吞吐率。&lt;/p&gt;
+&lt;p&gt;即使是普通的服务器，Kafka也可以轻松支持每秒百万级的写入请求，超过了大部分的消息中间件，这种特性也使得K
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Apache Spark 3.0.0 正式版终于发布了，重要特性全面解析</title>
