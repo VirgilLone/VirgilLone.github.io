@@ -539,10 +539,10 @@
 <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>在解释I/O模型之前，我先说明一下几个操作系统的概念</p>
 <h3 id="文件描述符fd"><a href="#文件描述符fd" class="headerlink" title="文件描述符fd"></a>文件描述符fd</h3><p>文件描述符（file descriptor）是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。</p>
 <p>文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。 当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。 在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。</p>
-<h3 id="缓存I-O"><a href="#缓存I-O" class="headerlink" title="缓存I/O"></a><a href="http://mp.weixin.qq.com/s?__biz=MzI3ODcxMzQzMw==&amp;mid=2247488058&amp;idx=1&amp;sn=42790c25bb1a5837f50724bc8c4fc991&amp;chksm=eb53970cdc241e1abd822910d3dfdf7bbdf41ee14d5e50e5bd85a3a7d05b864a4db4446a695c&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">缓存I/O</a></h3><p>缓存I/O又被称作标准I/O，大多数文件系统的默认I/O操作都是缓存I/O。在Linux的缓存I/O机制中， 操作系统会将I/O的数据缓存在文件系统的页缓存中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中， 然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。</p>
+<h3 id="缓存I-O"><a href="#缓存I-O" class="headerlink" title="缓存I/O"></a>缓存I/O</h3><p>缓存I/O又被称作标准I/O，大多数文件系统的默认I/O操作都是缓存I/O。在Linux的缓存I/O机制中， 操作系统会将I/O的数据缓存在文件系统的页缓存中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中， 然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。</p>
 <p>缓存I/O的缺点是数据在传输过程中需要在应用程序地址空间和内核进行多次数据拷贝操作，这些数据拷贝操作所带来的CPU以及内存开销是非常大的。</p>
 <p>下面我以一个生活中烧开水的例子来形象解释一下同步、异步、阻塞、非阻塞概念。</p>
-<h3 id="同步和异步"><a href="#同步和异步" class="headerlink" title="同步和异步"></a><a href="http://mp.weixin.qq.com/s?__biz=MzI3ODcxMzQzMw==&amp;mid=2247488058&amp;idx=1&amp;sn=42790c25bb1a5837f50724bc8c4fc991&amp;chksm=eb53970cdc241e1abd822910d3dfdf7bbdf41ee14d5e50e5bd85a3a7d05b864a4db4446a695c&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">同步和异步</a></h3><p>说到烧水，我们都是通过热水壶来烧水的。在很久之前，科技还没有这么发达的时候，如果我们要烧水， 需要把水壶放到火炉上，我们通过观察水壶内的水的沸腾程度来判断水有没有烧开。</p>
+<h3 id="同步和异步"><a href="#同步和异步" class="headerlink" title="同步和异步"></a>同步和异步</h3><p>说到烧水，我们都是通过热水壶来烧水的。在很久之前，科技还没有这么发达的时候，如果我们要烧水， 需要把水壶放到火炉上，我们通过观察水壶内的水的沸腾程度来判断水有没有烧开。</p>
 <p>随着科技的发展，现在市面上的水壶都有了提醒功能，当我们把水壶插电之后，水壶水烧开之后会通过声音提醒我们水开了。</p>
 <p>对于烧水这件事儿来说，传统水壶的烧水就是同步的，高科技水壶的烧水就是异步的。</p>
 <p><strong>同步请求</strong></p>
