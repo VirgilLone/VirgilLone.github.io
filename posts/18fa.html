@@ -530,11 +530,10 @@
 <p><img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="/images/pasted-3.png" alt=""><br>Apache Spark 3.0.0 中主要特性如下：</p>
 <p><img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="/images/pasted-4.png" alt=""><br>关于这些比较重要的特性我已经在 这个分类里面进行了介绍，感兴趣的同学可以去看看。下面我们来快速看看 Spark 3.0 比较重要的新特性吧。比较全面的可以到 Spark Release 3.0.0 这里看看。</p>
 <h3 id="动态分区修剪（Dynamic-Partition-Pruning）"><a href="#动态分区修剪（Dynamic-Partition-Pruning）" class="headerlink" title="动态分区修剪（Dynamic Partition Pruning）"></a><strong>动态分区修剪（Dynamic Partition Pruning）</strong></h3><p>所谓的动态分区裁剪就是基于运行时（run time）推断出来的信息来进一步进行分区裁剪。举个例子，我们有如下的查询：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM dim_iteblog </span><br><span class="line">JOIN fact_iteblog </span><br><span class="line">ON (dim_iteblog.partcol = fact_iteblog.partcol) </span><br><span class="line">WHERE dim_iteblog.othercol &gt; 10</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<p>假设 dim_iteblog 表的 dim_iteblog.othercol &gt; 10 过滤出来的数据比较少，但是由于之前版本的 Spark 无法进行动态计算代价，所以可能会导致 fact_iteblog 表扫描出大量无效的数据。有了动态分区裁减，可以在运行的时候过滤掉 fact_iteblog 表无用的数据。经过这个优化，查询扫描的数据大大减少，性能提升了 33 倍。</p>
+<pre><code>SELECT * FROM dim_iteblog 
+JOIN fact_iteblog 
+ON (dim_iteblog.partcol = fact_iteblog.partcol) 
+WHERE dim_iteblog.othercol &gt; 10</code></pre><p>假设 dim_iteblog 表的 dim_iteblog.othercol &gt; 10 过滤出来的数据比较少，但是由于之前版本的 Spark 无法进行动态计算代价，所以可能会导致 fact_iteblog 表扫描出大量无效的数据。有了动态分区裁减，可以在运行的时候过滤掉 fact_iteblog 表无用的数据。经过这个优化，查询扫描的数据大大减少，性能提升了 33 倍。</p>
 <p>在 TPC-DS 基准测试中，102个查询中的60个得到2到18倍的加速。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="/images/pasted-5.png" alt=""></p>
 <p>这个特性对应的 ISSUE 可以参见 SPARK-11150 和 SPARK-28888。过往记忆大数据公众号也在前段时间对这个特性进行了详细介绍，具体请参见<a href="http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&amp;mid=2650718656&amp;idx=1&amp;sn=57de5460e470cb9e475799b972576463&amp;chksm=887ddcb6bf0a55a0569c134bbfab39efd91fef01407df60c4e3681486856972b4e70c15a4b92&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">《Apache Spark 3.0 动态分区裁剪（Dynamic Partition Pruning）介绍》</a>和<a href="http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&amp;mid=2650718711&amp;idx=1&amp;sn=f35b18df40de865a9a29064f3ea8d45e&amp;chksm=887ddc81bf0a559776e59d08c69a17426d716df9061ca69e39a396f5c82737c216b4bc8eedfd&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">《Apache Spark 3.0 动态分区裁剪（Dynamic Partition Pruning）使用》</a>。</p>
@@ -591,9 +590,15 @@
 <p><img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="/images/pasted-11.png" alt=""></p>
 <p>可以看出，SparkR 向量化是利用 Apache Arrow，其使得系统之间数据的交互变得很高效，而且避免了数据的序列化和反序列化的消耗，所以采用了这个之后，SparkR 和 Spark 交互的性能得到极大提升。</p>
 <h3 id="Kafka-Streaming-includeHeaders"><a href="#Kafka-Streaming-includeHeaders" class="headerlink" title="Kafka Streaming: includeHeaders"></a>Kafka Streaming: includeHeaders</h3><p>Apache Kafka 0.11.0.0 版本支持在消息中配置一些 headers 信息，具体参见 KIP-82 - Add Record Headers，对应的 ISSUE 参见 KAFKA-4208。这些 Headers 在一些场景下很有用，Spark 3.0.0 为了满足用户的场景所以当然需要支持这个功能了，具体参见 SPARK-23539。具体使用如下</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">val df = spark </span><br><span class="line">            .readStream </span><br><span class="line">            .format("kafka") </span><br><span class="line">            .option("kafka.bootstrap.servers", "host1:port1,host2:port2") </span><br><span class="line">            .option("subscribe", "topic1")</span><br><span class="line">            .option("includeHeaders", "true")</span><br><span class="line">            .load()</span><br><span class="line"></span><br><span class="line">df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)", "headers") .as[(String, String, Map)]</span><br></pre></td></tr></tbody></table></figure>
+<pre><code>val df = spark 
+            .readStream 
+            .format("kafka") 
+            .option("kafka.bootstrap.servers", "host1:port1,host2:port2") 
+            .option("subscribe", "topic1")
+            .option("includeHeaders", "true")
+            .load()
 
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)", "headers") .as[(String, String, Map)]</code></pre><h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
 <li>Spark on K8S：Spark 对 Kubernetes 的支持是从2.3版本开始的，Spark 2.4 得到提升，Spark 3.0 将会加入 Kerberos 以及资源动态分配的支持。</li>
 <li>Remote Shuffle Service：当前的 Shuffle 有很多问题，比如弹性差、对 NodeManager 有很大影响，不适应云环境。为了解决上面问题，将会引入 Remote Shuffle Service，具体参见 SPARK-25299</li>
 <li>支持 JDK 11：参见 SPARK-24417，之所以直接选择 JDK 11 是因为 JDK 8 即将达到 EOL（end of life），而 JDK9 和 JDK10 已经是 EOL，所以社区就跳过 JDK9 和 JDK10 而直接支持 JDK11。不过 Spark 3.0 预览版默认还是使用 JDK 1.8；</li>
