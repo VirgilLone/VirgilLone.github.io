@@ -356,7 +356,7 @@
     // 每天切换 banner 图.  Switch banner image every day.
     // var bannerUrl = "/medias/banner/" + new Date().getDay() + '.jpg';
     // $('.bg-cover').css('background-image', 'url(' + bannerUrl + ')');
-    $('.bg-cover').css('background-image', 'url(https://cdn.jsdelivr.net/gh/virgillone/cdn@0.1/source/medias/banner/' + new Date().getDay() + '.jpg)');
+    $('.bg-cover').css('background-image', 'url(https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/banner/' + new Date().getDay() + '.jpg)');
 </script>
 
 
@@ -376,19 +376,10 @@
             <div class="tag-chips">
                 
                 
-                <a href="/tags/IO/" title="IO: 1">
-                    <span class="chip center-align waves-effect waves-light
-                             chip-default "
-                            data-tagname="IO" style="background-color: #F9EBEA;">IO
-                        <span class="tag-length">1</span>
-                    </span>
-                </a>
-                
-                
                 <a href="/tags/Linux/" title="Linux: 2">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="Linux" style="background-color: #F5EEF8;">Linux
+                            data-tagname="Linux" style="background-color: #F9EBEA;">Linux
                         <span class="tag-length">2</span>
                     </span>
                 </a>
@@ -397,7 +388,16 @@
                 <a href="/tags/kafka/" title="kafka: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="kafka" style="background-color: #D5F5E3;">kafka
+                            data-tagname="kafka" style="background-color: #F5EEF8;">kafka
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/IO/" title="IO: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="IO" style="background-color: #D5F5E3;">IO
                         <span class="tag-length">1</span>
                     </span>
                 </a>
@@ -426,7 +426,7 @@
 <script type="text/javascript">
     
 
-    $('#tag-wordcloud').jQCloud([{"text":"IO","weight":1,"link":"/tags/IO/"},{"text":"Linux","weight":2,"link":"/tags/Linux/"},{"text":"kafka","weight":1,"link":"/tags/kafka/"}], {
+    $('#tag-wordcloud').jQCloud([{"text":"Linux","weight":2,"link":"/tags/Linux/"},{"text":"kafka","weight":1,"link":"/tags/kafka/"},{"text":"IO","weight":1,"link":"/tags/IO/"}], {
         autoResize: true
     });
 </script>
