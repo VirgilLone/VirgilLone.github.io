@@ -88,19 +88,6 @@
     
     
     <entry>
-      <title>手把手教你用-FastDFS-构建分布式文件管理系统</title>
-      <link href="/posts/cdb7.html"/>
-      <url>/posts/cdb7.html</url>
-      
-        <content type="html"><![CDATA[<script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>letter</title>
       <link href="/posts/fbb5.html"/>
       <url>/posts/fbb5.html</url>

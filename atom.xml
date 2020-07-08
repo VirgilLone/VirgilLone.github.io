@@ -125,33 +125,6 @@
   </entry>
   
   <entry>
-    <title>手把手教你用-FastDFS-构建分布式文件管理系统</title>
-    <link href="https://virgillone.github.io/posts/cdb7.html"/>
-    <id>https://virgillone.github.io/posts/cdb7.html</id>
-    <published>2020-06-18T07:25:05.633Z</published>
-    <updated>2020-07-08T08:18:25.599Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;script&gt;
-        document.querySelectorAll(&#39;.github-emoji&#39;)
-          .forEach(el =&gt; {
-            if (!el.dataset.src) { return; }
-       
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
     <title>letter</title>
     <link href="https://virgillone.github.io/posts/fbb5.html"/>
     <id>https://virgillone.github.io/posts/fbb5.html</id>
