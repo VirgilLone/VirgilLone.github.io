@@ -106,7 +106,7 @@
     <link href="https://virgillone.github.io/posts/18fa.html"/>
     <id>https://virgillone.github.io/posts/18fa.html</id>
     <published>2020-06-19T01:17:40.000Z</published>
-    <updated>2020-06-19T04:35:09.990Z</updated>
+    <updated>2020-07-08T08:15:52.482Z</updated>
     
     <summary type="html">
     
@@ -125,11 +125,11 @@
   </entry>
   
   <entry>
-    <title>手把手教你用 FastDFS 构建分布式文件管理系统</title>
-    <link href="https://virgillone.github.io/posts/6255.html"/>
-    <id>https://virgillone.github.io/posts/6255.html</id>
-    <published>2020-06-17T02:16:00.000Z</published>
-    <updated>2020-06-18T08:17:47.271Z</updated>
+    <title>手把手教你用-FastDFS-构建分布式文件管理系统</title>
+    <link href="https://virgillone.github.io/posts/cdb7.html"/>
+    <id>https://virgillone.github.io/posts/cdb7.html</id>
+    <published>2020-06-18T07:25:05.633Z</published>
+    <updated>2020-07-08T08:18:25.599Z</updated>
     
     <summary type="html">
     
@@ -137,7 +137,11 @@
       
         
         
-          &lt;p&gt;说起分布式文件管理系统，大家可能很容易想到 HDFS、GFS 等系统，前者是 Hadoop 的一部分，后者则是 Google 提供的分布式文件管理系统。除了这些之外，国内淘宝和腾讯也有自己的分布式文件管理系统，都叫 TFS（Taobao File System 和
+          &lt;script&gt;
+        document.querySelectorAll(&#39;.github-emoji&#39;)
+          .forEach(el =&gt; {
+            if (!el.dataset.src) { return; }
+       
         
       
     
