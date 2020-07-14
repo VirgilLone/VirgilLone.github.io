@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="letter, web,blog,java,bigdata,spark,hadoop,developer">
+    <meta name="keywords" content="java线程系列之线程的生命周期, web,blog,java,bigdata,spark,hadoop,developer">
     <meta name="description" content="blog,web,share,post,diary,amazing">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>letter | 山阴路的夏天</title>
+    <title>java线程系列之线程的生命周期 | 山阴路的夏天</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/virgillone/cdn/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/virgillone/cdn/libs/awesome/css/all.css">
@@ -334,7 +334,7 @@
 <script src="https://cdn.jsdelivr.net/gh/virgillone/cdn/libs/cryptojs/crypto-js.min.js"></script>
 <script>
     (function() {
-        let pwd = '449e612fd4368c63137d24763648cf4752f7942cd0e2f8ce57bde73e956e74bf';
+        let pwd = '';
         if (pwd && pwd.length > 0) {
             if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
@@ -347,12 +347,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/12.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">letter</h1>
+                    <h1 class="description center-align post-title">java线程系列之线程的生命周期</h1>
                 </div>
             </div>
         </div>
@@ -467,9 +467,17 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/java/">
+                                <span class="chip bg-color">java</span>
+                            </a>
+                        
+                            <a href="/tags/thread/">
+                                <span class="chip bg-color">thread</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -477,8 +485,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/xxx/" class="post-category">
-                                xxx
+                            <a href="/categories/thread/" class="post-category">
+                                thread
                             </a>
                         
                     </div>
@@ -490,28 +498,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-05-20
+                    2020-07-14
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2020-06-23
+                    2020-07-14
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    62
+                    2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    7 分
                 </div>
                 
 
@@ -526,7 +534,149 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="这是写给陈怡宝的信"><a href="#这是写给陈怡宝的信" class="headerlink" title="这是写给陈怡宝的信"></a>这是写给陈怡宝的信</h1><p>asas</p>
+                <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>大家都知道线程是有生命周期，但是可以认真负责地告诉你网上几乎没有一篇文章讲得是完全正确的。</p>
+<p><strong>常见的错误</strong>有：就绪状态、运行中状态（RUNNING）、死亡状态、中断状态、只有阻塞没有等待状态、流程图乱画等，最常见的错误就是说线程只有5种状态。</p>
+<p>今天这篇文章会彻底讲清楚线程的生命周期，并分析synchronized锁、基于AQS的锁中线程状态变化的逻辑。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>（1）线程的状态有哪些？</p>
+<p>（2）synchronized锁各阶段线程处于什么状态？</p>
+<p>（3）重入锁、条件锁各阶段线程处于什么状态？</p>
+<h2 id="先上源码"><a href="#先上源码" class="headerlink" title="先上源码"></a>先上源码</h2><p>关于线程的生命周期，我们可以看一下<code>java.lang.Thread.State</code>这个类，它是线程的内部枚举类，定义了线程的各种状态，并且注释也很清晰。</p>
+<pre><code class="java">public enum State {
+    /**
+     * 新建状态，线程还未开始
+     */
+    NEW,
+
+    /**
+     * 可运行状态，正在运行或者在等待系统资源，比如CPU
+     */
+    RUNNABLE,
+
+    /**
+     * 阻塞状态，在等待一个监视器锁（也就是我们常说的synchronized）
+     * 或者在调用了Object.wait()方法且被notify()之后也会进入BLOCKED状态
+     */
+    BLOCKED,
+
+    /**
+     * 等待状态，在调用了以下方法后进入此状态
+     * 1. Object.wait()无超时的方法后且未被notify()前，如果被notify()了会进入BLOCKED状态
+     * 2. Thread.join()无超时的方法后
+     * 3. LockSupport.park()无超时的方法后
+     */
+    WAITING,
+
+    /**
+     * 超时等待状态，在调用了以下方法后会进入超时等待状态
+     * 1. Thread.sleep()方法后【本文由公从号“彤哥读源码”原创】
+     * 2. Object.wait(timeout)方法后且未到超时时间前，如果达到超时了或被notify()了会进入BLOCKED状态
+     * 3. Thread.join(timeout)方法后
+     * 4. LockSupport.parkNanos(nanos)方法后
+     * 5. LockSupport.parkUntil(deadline)方法后
+     */
+    TIMED_WAITING,
+
+    /**
+     * 终止状态，线程已经执行完毕
+     */
+    TERMINATED;
+}</code></pre>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><p>线程生命周期中各状态的注释完毕了，下面我们再来看看各状态之间的流转：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="/images/pasted-23.png" alt=""></p>
+<p>（1）为了方便讲解，我们把锁分成两大类，一类是synchronized锁，一类是基于AQS的锁（我们拿重入锁举例），也就是内部使用了LockSupport.park()/parkNanos()/parkUntil()几个方法的锁；</p>
+<p>（2）不管是synchronized锁还是基于AQS的锁，内部都是分成两个队列，一个是同步队列（AQS的队列），一个是等待队列（Condition的队列）；</p>
+<p>（3）对于内部调用了object.wait()/wait(timeout)或者condition.await()/await(timeout)方法，线程都是先进入等待队列，被notify()/signal()或者超时后，才会进入同步队列；</p>
+<p>（4）明确声明，BLOCKED状态只有线程处于synchronized的同步队列的时候才会有这个状态，其它任何情况都跟这个状态无关；</p>
+<p>（5）对于synchronized，线程执行synchronized的时候，如果立即获得了锁（没有进入同步队列），线程处于RUNNABLE状态；</p>
+<p>（6）对于synchronized，线程执行synchronized的时候，如果无法获得锁（直接进入同步队列），线程处于BLOCKED状态；</p>
+<p>（5）对于synchronized内部，调用了object.wait()之后线程处于WAITING状态（进入等待队列）；</p>
+<p>（6）对于synchronized内部，调用了object.wait(timeout)之后线程处于TIMED_WAITING状态（进入等待队列）；</p>
+<p>（7）对于synchronized内部，调用了object.wait()之后且被notify()了，如果线程立即获得了锁（也就是没有进入同步队列），线程处于RUNNABLE状态；</p>
+<p>（8）对于synchronized内部，调用了object.wait(timeout)之后且被notify()了，如果线程立即获得了锁（也就是没有进入同步队列），线程处于RUNNABLE状态；</p>
+<p>（9）对于synchronized内部，调用了object.wait(timeout)之后且超时了，这时如果线程正好立即获得了锁（也就是没有进入同步队列），线程处于RUNNABLE状态；</p>
+<p>（10）对于synchronized内部，调用了object.wait()之后且被notify()了，如果线程无法获得锁（也就是进入了同步队列），线程处于BLOCKED状态；</p>
+<p>（11）对于synchronized内部，调用了object.wait(timeout)之后且被notify()了或者超时了，如果线程无法获得锁（也就是进入了同步队列），线程处于BLOCKED状态；</p>
+<p>（12）对于重入锁，线程执行lock.lock()的时候，如果立即获得了锁（没有进入同步队列），线程处于RUNNABLE状态；</p>
+<p>（13）对于重入锁，线程执行lock.lock()的时候，如果无法获得锁（直接进入同步队列），线程处于WAITING状态；</p>
+<p>（14）对于重入锁内部，调用了condition.await()之后线程处于WAITING状态（进入等待队列）；</p>
+<p>（15）对于重入锁内部，调用了condition.await(timeout)之后线程处于TIMED_WAITING状态（进入等待队列）；</p>
+<p>（16）对于重入锁内部，调用了condition.await()之后且被signal()了，如果线程立即获得了锁（也就是没有进入同步队列），线程处于RUNNABLE状态；</p>
+<p>（17）对于重入锁内部，调用了condition.await(timeout)之后且被signal()了，如果线程立即获得了锁（也就是没有进入同步队列），线程处于RUNNABLE状态；</p>
+<p>（18）对于重入锁内部，调用了condition.await(timeout)之后且超时了，这时如果线程正好立即获得了锁（也就是没有进入同步队列），线程处于RUNNABLE状态；</p>
+<p>（19）对于重入锁内部，调用了condition.await()之后且被signal()了，如果线程无法获得锁（也就是进入了同步队列），线程处于WAITING状态；</p>
+<p>（20）对于重入锁内部，调用了condition.await(timeout)之后且被signal()了或者超时了，如果线程无法获得锁（也就是进入了同步队列），线程处于WAITING状态；</p>
+<p>（21）对于重入锁，如果内部调用了condition.await()之后且被signal()之后依然无法获取锁的，其实经历了两次WAITING状态的切换，一次是在等待队列，一次是在同步队列；</p>
+<p>（22）对于重入锁，如果内部调用了condition.await(timeout)之后且被signal()或超时了的，状态会有一个从TIMED_WAITING切换到WAITING的过程，也就是从等待队列进入到同步队列；</p>
+<h2 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h2><p>看完上面的部分，你肯定想知道怎么去验证，下面就说说验证的方法，先给出测试用例。</p>
+<pre><code class="java">public class ThreadLifeTest {
+    public static void main(String[] args) throws IOException {
+        Object object = new Object();
+        ReentrantLock lock = new ReentrantLock();
+        Condition condition = lock.newCondition();
+
+        new Thread(()-&gt;{
+            synchronized (object) {
+                try {
+                    System.out.println("thread1 waiting");
+                    object.wait();
+//                    object.wait(5000);
+                    System.out.println("thread1 after waiting");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "Thread1").start();
+
+        new Thread(()-&gt;{
+            synchronized (object) {
+                try {
+                    System.out.println("thread2 notify");
+                    // 打开或关闭这段注释，观察Thread1的状态
+//                    object.notify();【本文由公从号“彤哥读源码”原创】
+                    // notify之后当前线程并不会释放锁，只是被notify的线程从等待队列进入同步队列
+                    // sleep也不会释放锁
+                    Thread.sleep(10000000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "Thread2").start();
+
+        new Thread(()-&gt;{
+            lock.lock();
+            System.out.println("thread3 waiting");
+            try {
+                condition.await();
+//                condition.await(200, (TimeUnit).SECONDS);
+                System.out.println("thread3 after waiting");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                lock.unlock();
+            }
+        }, "Thread3").start();
+
+        new Thread(()-&gt;{
+            lock.lock();
+            System.out.println("thread4");
+            // 打开或关闭这段注释，观察Thread3的状态
+//            condition.signal();【本文由公从号“彤哥读源码”原创】
+            // signal之后当前线程并不会释放锁，只是被signal的线程从等待队列进入同步队列
+            // sleep也不会释放锁
+            try {
+                Thread.sleep(1000000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                lock.unlock();
+            }
+        }, "Thread4").start();
+
+    }
+}</code></pre>
+<p>打开或关闭上面注释部分的代码，使用IDEA的RUN模式运行代码，然后点击左边的一个摄像头按钮(jstack)，查看各线程的状态。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="/images/pasted-24.png" alt=""></p>
+<p>注：不要使用DEBUG模式，DEBUG模式全都变成WAITING状态了，很神奇。</p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -570,7 +720,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://virgillone.github.io/posts/fbb5.html">https://virgillone.github.io/posts/fbb5.html</a>
+                    <a href="https://virgillone.github.io/posts/4b65.html">https://virgillone.github.io/posts/4b65.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -607,7 +757,15 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/java/">
+                                    <span class="chip bg-color">java</span>
+                                </a>
+                            
+                                <a href="/tags/thread/">
+                                    <span class="chip bg-color">thread</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -799,32 +957,51 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/18fa.html">
+                <a href="/posts/8257.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/11.jpg" class="responsive-img" alt="Apache Spark 3.0.0 正式版终于发布了，重要特性全面解析">
+                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/23.jpg" class="responsive-img" alt="java线程系列之线程池深入解析——生命周期">
                         
-                        <span class="card-title">Apache Spark 3.0.0 正式版终于发布了，重要特性全面解析</span>
+                        <span class="card-title">java线程系列之线程池深入解析——生命周期</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            原计划在2019年年底发布的 Apache Spark 3.0.0 今天终于赶在下周二举办的 Spark Summit AI 会议之前正式发布了! Apache Spark 3.0.0 自2018年10月02日开发到目前已经经历了近21个月
+                            简介上一章我们一起重温了下线程的生命周期（六种状态还记得不？），但是你知不知道其实线程池也是有生命周期的呢？！
+问题（1）线程池的状态有哪些？
+（2）各种状态下对于任务队列中的任务有何影响？
+先上源码其实，在我们讲线程池体系结构的时候，讲了
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-06-19
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-14
                         </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Virgil Lune
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/thread/" class="post-category">
+                                    thread
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/java/">
+                        <span class="chip bg-color">java</span>
+                    </a>
+                    
+                    <a href="/tags/thread/">
+                        <span class="chip bg-color">thread</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -833,41 +1010,53 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/fbb5.html">
+                <a href="/posts/8c27.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/2.jpg" class="responsive-img" alt="letter">
+                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/23.jpg" class="responsive-img" alt="详解Java中4种IO模型">
                         
-                        <span class="card-title">letter</span>
+                        <span class="card-title">详解Java中4种IO模型</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            xxxxx
+                            同步、异步、阻塞、非阻塞都是和I/O（输入输出）有关的概念，最简单的文件读取就是I/O操作。而在文件读取这件事儿上，可以有多种方式。
+本篇会先介绍一下I/O的基本概念，通过一个生活例子来分别解释下这几种I/O模型，以及Java支持的I/O模
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-05-20
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-23
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/xxx/" class="post-category">
-                                    xxx
+                            <a href="/categories/java/" class="post-category">
+                                    java
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
-
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/IO/">
+                        <span class="chip bg-color">IO</span>
+                    </a>
+                    
+                    <a href="/tags/Linux/">
+                        <span class="chip bg-color">Linux</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>

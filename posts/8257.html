@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="letter, web,blog,java,bigdata,spark,hadoop,developer">
+    <meta name="keywords" content="java线程系列之线程池深入解析——生命周期, web,blog,java,bigdata,spark,hadoop,developer">
     <meta name="description" content="blog,web,share,post,diary,amazing">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>letter | 山阴路的夏天</title>
+    <title>java线程系列之线程池深入解析——生命周期 | 山阴路的夏天</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/virgillone/cdn/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/virgillone/cdn/libs/awesome/css/all.css">
@@ -334,7 +334,7 @@
 <script src="https://cdn.jsdelivr.net/gh/virgillone/cdn/libs/cryptojs/crypto-js.min.js"></script>
 <script>
     (function() {
-        let pwd = '449e612fd4368c63137d24763648cf4752f7942cd0e2f8ce57bde73e956e74bf';
+        let pwd = '';
         if (pwd && pwd.length > 0) {
             if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
@@ -347,12 +347,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/23.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">letter</h1>
+                    <h1 class="description center-align post-title">java线程系列之线程池深入解析——生命周期</h1>
                 </div>
             </div>
         </div>
@@ -467,9 +467,17 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/java/">
+                                <span class="chip bg-color">java</span>
+                            </a>
+                        
+                            <a href="/tags/thread/">
+                                <span class="chip bg-color">thread</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -477,8 +485,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/xxx/" class="post-category">
-                                xxx
+                            <a href="/categories/thread/" class="post-category">
+                                thread
                             </a>
                         
                     </div>
@@ -490,28 +498,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-05-20
+                    2020-07-14
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2020-06-23
+                    2020-07-14
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    62
+                    1.8k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    7 分
                 </div>
                 
 
@@ -526,7 +534,184 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="这是写给陈怡宝的信"><a href="#这是写给陈怡宝的信" class="headerlink" title="这是写给陈怡宝的信"></a>这是写给陈怡宝的信</h1><p>asas</p>
+                <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>上一章我们一起重温了下线程的生命周期（六种状态还记得不？），但是你知不知道其实线程池也是有生命周期的呢？！</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>（1）线程池的状态有哪些？</p>
+<p>（2）各种状态下对于任务队列中的任务有何影响？</p>
+<h2 id="先上源码"><a href="#先上源码" class="headerlink" title="先上源码"></a>先上源码</h2><p>其实，在我们讲线程池体系结构的时候，讲了一些方法，比如shutDown()/shutDownNow()，它们都是与线程池的生命周期相关联的。</p>
+<p>我们先来看一下线程池ThreadPoolExecutor中定义的生命周期中的状态及相关方法：</p>
+<pre><code class="java">private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
+private static final int COUNT_BITS = Integer.SIZE - 3; // =29
+private static final int CAPACITY   = (1 &lt;&lt; COUNT_BITS) - 1; // =000 11111...
+
+// runState is stored in the high-order bits
+private static final int RUNNING    = -1 &lt;&lt; COUNT_BITS; // 111 00000...
+private static final int SHUTDOWN   =  0 &lt;&lt; COUNT_BITS; // 000 00000...
+private static final int STOP       =  1 &lt;&lt; COUNT_BITS; // 001 00000...
+private static final int TIDYING    =  2 &lt;&lt; COUNT_BITS; // 010 00000...
+private static final int TERMINATED =  3 &lt;&lt; COUNT_BITS; // 011 00000...
+
+// 线程池的状态
+private static int runStateOf(int c)     { return c &amp; ~CAPACITY; }
+// 线程池中工作线程的数量
+private static int workerCountOf(int c)  { return c &amp; CAPACITY; }
+// 计算ctl的值，等于运行状态“加上”线程数量
+private static int ctlOf(int rs, int wc) { return rs | wc; }</code></pre>
+<p>从上面这段代码，我们可以得出：</p>
+<p>（1）线程池的状态和工作线程的数量共同保存在控制变量ctl中，类似于AQS中的state变量，不过这里是直接使用的AtomicInteger，这里换成unsafe+volatile也是可以的；</p>
+<p>（2）ctl的高三位保存运行状态，低29位保存工作线程的数量，也就是说线程的数量最多只能有(2^29-1)个，也就是上面的CAPACITY；</p>
+<p>（3）线程池的状态一共有五种，分别是RUNNING、SHUTDOWN、STOP、TIDYING、TERMINATED；</p>
+<p>（4）RUNNING，表示可接受新任务，且可执行队列中的任务；</p>
+<p>（5）SHUTDOWN，表示不接受新任务，但可执行队列中的任务；</p>
+<p>（6）STOP，表示不接受新任务，且不再执行队列中的任务，且中断正在执行的任务；</p>
+<p>（7）TIDYING，所有任务已经中止，且工作线程数量为0，最后变迁到这个状态的线程将要执行terminated()钩子方法，只会有一个线程执行这个方法；</p>
+<p>（8）TERMINATED，中止状态，已经执行完terminated()钩子方法；</p>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><p>下面我们再来看看这些状态之间是怎么流转的：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="/images/pasted-25.png" alt=""></p>
+<p>（1）新建线程池时，它的初始状态为RUNNING，这个在上面定义ctl的时候可以看到；</p>
+<p>（2）RUNNING-&gt;SHUTDOWN，执行shutdown()方法时；</p>
+<p>（3）RUNNING-&gt;STOP，执行shutdownNow()方法时；</p>
+<p>（4）SHUTDOWN-&gt;STOP，执行shutdownNow()方法时【本文由公从号“彤哥读源码”原创】；</p>
+<p>（5）STOP-&gt;TIDYING，执行了shutdown()或者shutdownNow()后，所有任务已中止，且工作线程数量为0时，此时会执行terminated()方法；</p>
+<p>（6）TIDYING-&gt;TERMINATED，执行完terminated()方法后；</p>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>你以为贴个状态的源码，画个图就结束了嘛？那肯定不能啊，下面让我们一起来看看源码中是怎么控制的。</p>
+<p>（1）RUNNING</p>
+<p>RUNNING，比较简单，创建线程池的时候就会初始化ctl，而ctl初始化为RUNNING状态，所以线程池的初始状态就为RUNNING状态。</p>
+<pre><code class="java">// 初始状态为RUNNING
+private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));</code></pre>
+<p>（2）SHUTDOWN</p>
+<p>执行shutdown()方法时把状态修改为SHUTDOWN，这里肯定会成功，因为advanceRunState()方法中是个自旋，不成功不会退出。</p>
+<pre><code class="java">public void shutdown() {
+    final ReentrantLock mainLock = this.mainLock;
+    mainLock.lock();
+    try {
+        checkShutdownAccess();
+        // 修改状态为SHUTDOWN
+        advanceRunState(SHUTDOWN);
+        // 标记空闲线程为中断状态
+        interruptIdleWorkers();
+        onShutdown();
+    } finally {
+        mainLock.unlock();
+    }
+    tryTerminate();
+}
+private void advanceRunState(int targetState) {
+    for (;;) {
+        int c = ctl.get();
+        // 如果状态大于SHUTDOWN，或者修改为SHUTDOWN成功了，才会break跳出自旋
+        if (runStateAtLeast(c, targetState) ||
+            ctl.compareAndSet(c, ctlOf(targetState, workerCountOf(c))))
+            break;
+    }
+}</code></pre>
+<p>（3）STOP</p>
+<p>执行shutdownNow()方法时，会把线程池状态修改为STOP状态，同时标记所有线程为中断状态。</p>
+<pre><code class="java">public List&lt;Runnable&gt; shutdownNow() {
+    List&lt;Runnable&gt; tasks;
+    final ReentrantLock mainLock = this.mainLock;
+    mainLock.lock();
+    try {
+        checkShutdownAccess();
+        // 修改为STOP状态
+        advanceRunState(STOP);
+        // 标记所有线程为中断状态
+        interruptWorkers();
+        tasks = drainQueue();
+    } finally {
+        // 【本文由公从号“彤哥读源码”原创】
+        mainLock.unlock();
+    }
+    tryTerminate();
+    return tasks;
+}</code></pre>
+<p>至于线程是否响应中断其实是在队列的take()或poll()方法中响应的，最后会到AQS中，它们检测到线程中断了会抛出一个InterruptedException异常，然后getTask()中捕获这个异常，并且在下一次的自旋时退出当前线程并减少工作线程的数量。</p>
+<pre><code class="java">private Runnable getTask() {
+    boolean timedOut = false; // Did the last poll() time out?
+
+    for (;;) {
+        int c = ctl.get();
+        int rs = runStateOf(c);
+
+        // 如果状态为STOP了，这里会直接退出循环，且减少工作线程数量
+        // 退出循环了也就相当于这个线程的生命周期结束了
+        if (rs &gt;= SHUTDOWN &amp;&amp; (rs &gt;= STOP || workQueue.isEmpty())) {
+            decrementWorkerCount();
+            return null;
+        }
+
+        int wc = workerCountOf(c);
+
+        // Are workers subject to culling?
+        boolean timed = allowCoreThreadTimeOut || wc &gt; corePoolSize;
+
+        if ((wc &gt; maximumPoolSize || (timed &amp;&amp; timedOut))
+            &amp;&amp; (wc &gt; 1 || workQueue.isEmpty())) {
+            if (compareAndDecrementWorkerCount(c))
+                return null;
+            continue;
+        }
+
+        try {
+            // 真正响应中断是在poll()方法或者take()方法中
+            Runnable r = timed ?
+                workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) :
+                workQueue.take();
+            if (r != null)
+                return r;
+            timedOut = true;
+        } catch (InterruptedException retry) {
+            // 这里捕获中断异常
+            timedOut = false;
+        }
+    }
+}</code></pre>
+<p>这里有一个问题，就是已经通过getTask()取出来且返回的任务怎么办？</p>
+<p>实际上它们会正常执行完毕，有兴趣的同学可以自己看看runWorker()这个方法，我们下一节会分析这个方法。</p>
+<p>（4）TIDYING</p>
+<p>当执行shutdown()或shutdownNow()之后，如果所有任务已中止，且工作线程数量为0，就会进入这个状态。</p>
+<pre><code class="java">final void tryTerminate() {
+    for (;;) {
+        int c = ctl.get();
+        // 下面几种情况不会执行后续代码
+        // 1. 运行中
+        // 2. 状态的值比TIDYING还大，也就是TERMINATED
+        // 3. SHUTDOWN状态且任务队列不为空
+        if (isRunning(c) ||
+            runStateAtLeast(c, TIDYING) ||
+            (runStateOf(c) == SHUTDOWN &amp;&amp; ! workQueue.isEmpty()))
+            return;
+        // 工作线程数量不为0，也不会执行后续代码
+        if (workerCountOf(c) != 0) {
+            // 尝试中断空闲的线程
+            interruptIdleWorkers(ONLY_ONE);
+            return;
+        }
+
+        final ReentrantLock mainLock = this.mainLock;
+        mainLock.lock();
+        try {
+            // CAS修改状态为TIDYING状态
+            if (ctl.compareAndSet(c, ctlOf(TIDYING, 0))) {
+                try {
+                    // 更新成功，执行terminated钩子方法
+                    terminated();
+                } finally {
+                    // 强制更新状态为TERMINATED，这里不需要CAS了
+                    ctl.set(ctlOf(TERMINATED, 0));
+                    termination.signalAll();
+                }
+                return;
+            }
+        } finally {
+            mainLock.unlock();
+        }
+        // else retry on failed CAS
+    }
+}</code></pre>
+<p>实际更新状态为TIDYING和TERMINATED状态的代码都在tryTerminate()方法中，实际上tryTerminated()方法在很多地方都有调用，比如shutdown()、shutdownNow()、线程退出时，所以说几乎每个线程最后消亡的时候都会调用tryTerminate()方法，但最后只会有一个线程真正执行到修改状态为TIDYING的地方。</p>
+<p>修改状态为TIDYING后执行terminated()方法，最后修改状态为TERMINATED，标志着线程池真正消亡了。</p>
+<p>（5）TERMINATED</p>
+<p>见TIDYING中分析。</p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -570,7 +755,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://virgillone.github.io/posts/fbb5.html">https://virgillone.github.io/posts/fbb5.html</a>
+                    <a href="https://virgillone.github.io/posts/8257.html">https://virgillone.github.io/posts/8257.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -607,7 +792,15 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/java/">
+                                    <span class="chip bg-color">java</span>
+                                </a>
+                            
+                                <a href="/tags/thread/">
+                                    <span class="chip bg-color">thread</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -795,36 +988,57 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/posts/18fa.html">
+                <a href="/posts/8257.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/11.jpg" class="responsive-img" alt="Apache Spark 3.0.0 正式版终于发布了，重要特性全面解析">
+                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/23.jpg" class="responsive-img" alt="java线程系列之线程池深入解析——生命周期">
                         
-                        <span class="card-title">Apache Spark 3.0.0 正式版终于发布了，重要特性全面解析</span>
+                        <span class="card-title">java线程系列之线程池深入解析——生命周期</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            原计划在2019年年底发布的 Apache Spark 3.0.0 今天终于赶在下周二举办的 Spark Summit AI 会议之前正式发布了! Apache Spark 3.0.0 自2018年10月02日开发到目前已经经历了近21个月
+                            简介上一章我们一起重温了下线程的生命周期（六种状态还记得不？），但是你知不知道其实线程池也是有生命周期的呢？！
+问题（1）线程池的状态有哪些？
+（2）各种状态下对于任务队列中的任务有何影响？
+先上源码其实，在我们讲线程池体系结构的时候，讲了
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-06-19
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-14
+                            </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Virgil Lune
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/thread/" class="post-category">
+                                    thread
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/java/">
+                        <span class="chip bg-color">java</span>
+                    </a>
+                    
+                    <a href="/tags/thread/">
+                        <span class="chip bg-color">thread</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -833,41 +1047,53 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/fbb5.html">
+                <a href="/posts/4b65.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/2.jpg" class="responsive-img" alt="letter">
+                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/12.jpg" class="responsive-img" alt="java线程系列之线程的生命周期">
                         
-                        <span class="card-title">letter</span>
+                        <span class="card-title">java线程系列之线程的生命周期</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            xxxxx
+                            简介大家都知道线程是有生命周期，但是可以认真负责地告诉你网上几乎没有一篇文章讲得是完全正确的。
+常见的错误有：就绪状态、运行中状态（RUNNING）、死亡状态、中断状态、只有阻塞没有等待状态、流程图乱画等，最常见的错误就是说线程只有5种状态
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-05-20
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-14
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/xxx/" class="post-category">
-                                    xxx
+                            <a href="/categories/thread/" class="post-category">
+                                    thread
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
-
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/java/">
+                        <span class="chip bg-color">java</span>
+                    </a>
+                    
+                    <a href="/tags/thread/">
+                        <span class="chip bg-color">thread</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>

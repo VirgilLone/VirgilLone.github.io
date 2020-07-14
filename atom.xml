@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virgillone.github.io/"/>
-  <updated>2020-06-23T08:49:45.487Z</updated>
+  <updated>2020-07-14T03:10:29.342Z</updated>
   <id>https://virgillone.github.io/</id>
   
   <author>
@@ -17,11 +17,70 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>java线程系列之线程池深入解析——生命周期</title>
+    <link href="https://virgillone.github.io/posts/8257.html"/>
+    <id>https://virgillone.github.io/posts/8257.html</id>
+    <published>2020-07-14T03:05:57.000Z</published>
+    <updated>2020-07-14T03:10:29.342Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h2&gt;&lt;p&gt;上一章我们一起重温了下线程的生命周期（六种状态还记得不？），但是你知不知道其实线程池也是有生命周期的呢？！&lt;/p&gt;
+&lt;h2
+        
+      
+    
+    </summary>
+    
+    
+      <category term="thread" scheme="https://virgillone.github.io/categories/thread/"/>
+    
+    
+      <category term="java" scheme="https://virgillone.github.io/tags/java/"/>
+    
+      <category term="thread" scheme="https://virgillone.github.io/tags/thread/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java线程系列之线程的生命周期</title>
+    <link href="https://virgillone.github.io/posts/4b65.html"/>
+    <id>https://virgillone.github.io/posts/4b65.html</id>
+    <published>2020-07-14T02:45:00.000Z</published>
+    <updated>2020-07-14T03:05:29.090Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="thread" scheme="https://virgillone.github.io/categories/thread/"/>
+    
+    
+      <category term="java" scheme="https://virgillone.github.io/tags/java/"/>
+    
+      <category term="thread" scheme="https://virgillone.github.io/tags/thread/"/>
+    
+  </entry>
+  
+  <entry>
     <title>详解Java中4种IO模型</title>
     <link href="https://virgillone.github.io/posts/8c27.html"/>
     <id>https://virgillone.github.io/posts/8c27.html</id>
     <published>2020-06-23T08:11:41.000Z</published>
-    <updated>2020-06-23T08:49:45.487Z</updated>
+    <updated>2020-07-14T02:59:31.257Z</updated>
     
     <summary type="html">
     
@@ -38,12 +97,12 @@
     </summary>
     
     
-      <category term="JAVA" scheme="https://virgillone.github.io/categories/JAVA/"/>
+      <category term="java" scheme="https://virgillone.github.io/categories/java/"/>
     
-    
-      <category term="Linux" scheme="https://virgillone.github.io/tags/Linux/"/>
     
       <category term="IO" scheme="https://virgillone.github.io/tags/IO/"/>
+    
+      <category term="Linux" scheme="https://virgillone.github.io/tags/Linux/"/>
     
   </entry>
   
