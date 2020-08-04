@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="java线程系列之线程的生命周期, web,blog,java,bigdata,spark,hadoop,developer">
+    <meta name="keywords" content="java线程系列之线程池深入解析——构造方法, web,blog,java,bigdata,spark,hadoop,developer">
     <meta name="description" content="blog,web,share,post,diary,amazing">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>java线程系列之线程的生命周期 | 山阴路的夏天</title>
+    <title>java线程系列之线程池深入解析——构造方法 | 山阴路的夏天</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/virgillone/cdn/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/virgillone/cdn/libs/awesome/css/all.css">
@@ -347,12 +347,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/20.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">java线程系列之线程的生命周期</h1>
+                    <h1 class="description center-align post-title">java线程系列之线程池深入解析——构造方法</h1>
                 </div>
             </div>
         </div>
@@ -498,28 +498,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-14
+                    2020-08-04
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2020-07-14
+                    2020-08-04
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2k
+                    1.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    7 分
+                    5 分
                 </div>
                 
 
@@ -534,149 +534,124 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>大家都知道线程是有生命周期，但是可以认真负责地告诉你网上几乎没有一篇文章讲得是完全正确的。</p>
-<p><strong>常见的错误</strong>有：就绪状态、运行中状态（RUNNING）、死亡状态、中断状态、只有阻塞没有等待状态、流程图乱画等，最常见的错误就是说线程只有5种状态。</p>
-<p>今天这篇文章会彻底讲清楚线程的生命周期，并分析synchronized锁、基于AQS的锁中线程状态变化的逻辑。</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>（1）线程的状态有哪些？</p>
-<p>（2）synchronized锁各阶段线程处于什么状态？</p>
-<p>（3）重入锁、条件锁各阶段线程处于什么状态？</p>
-<h2 id="先上源码"><a href="#先上源码" class="headerlink" title="先上源码"></a>先上源码</h2><p>关于线程的生命周期，我们可以看一下<code>java.lang.Thread.State</code>这个类，它是线程的内部枚举类，定义了线程的各种状态，并且注释也很清晰。</p>
-<pre><code class="java">public enum State {
-    /**
-     * 新建状态，线程还未开始
-     */
-    NEW,
+                <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>ThreadPoolExecutor的构造方法是创建线程池的入口，虽然比较简单，但是信息量很大，由此也能引发一系列的问题，同样地，这也是面试中经常被问到的问题，下面只是列举了一部分关于ThreadPoolExecutor构造方法的问题，如果你都能回答上来，则可以不用看下面的分析了。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>（1）ThreadPoolExecutor有几个构造方法？</p>
+<p>（2）ThreadPoolExecutor最长的构造方法有几个参数？</p>
+<p>（3）keepAliveTime是做什么用的？</p>
+<p>（7）核心线程会不会超时关闭？能不能超时关闭？</p>
+<p>（4）ConcurrentLinkedQueue能不能作为任务队列的参数？</p>
+<p>（5）默认的线程是怎么创建的？</p>
+<p>（6）如何实现自己的线程工厂？</p>
+<p>（7）拒绝策略有哪些？</p>
+<p>（8）默认的拒绝策略是什么？</p>
+<h2 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h2><p>好了，我们直接上代码。</p>
+<pre><code class="java">public ThreadPoolExecutor(int corePoolSize,
+                          int maximumPoolSize,
+                          long keepAliveTime,
+                          TimeUnit unit,
+                          BlockingQueue&lt;Runnable&gt; workQueue) {
+    this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
+         Executors.defaultThreadFactory(), defaultHandler);
+}
 
-    /**
-     * 可运行状态，正在运行或者在等待系统资源，比如CPU
-     */
-    RUNNABLE,
+public ThreadPoolExecutor(int corePoolSize,
+                          int maximumPoolSize,
+                          long keepAliveTime,
+                          TimeUnit unit,
+                          BlockingQueue&lt;Runnable&gt; workQueue,
+                          ThreadFactory threadFactory) {
+    this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
+         threadFactory, defaultHandler);
+}
 
-    /**
-     * 阻塞状态，在等待一个监视器锁（也就是我们常说的synchronized）
-     * 或者在调用了Object.wait()方法且被notify()之后也会进入BLOCKED状态
-     */
-    BLOCKED,
+public ThreadPoolExecutor(int corePoolSize,
+                          int maximumPoolSize,
+                          long keepAliveTime,
+                          TimeUnit unit,
+                          BlockingQueue&lt;Runnable&gt; workQueue,
+                          RejectedExecutionHandler handler) {
+    this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
+         Executors.defaultThreadFactory(), handler);
+}
 
-    /**
-     * 等待状态，在调用了以下方法后进入此状态
-     * 1. Object.wait()无超时的方法后且未被notify()前，如果被notify()了会进入BLOCKED状态
-     * 2. Thread.join()无超时的方法后
-     * 3. LockSupport.park()无超时的方法后
-     */
-    WAITING,
-
-    /**
-     * 超时等待状态，在调用了以下方法后会进入超时等待状态
-     * 1. Thread.sleep()方法后【本文由公从号“彤哥读源码”原创】
-     * 2. Object.wait(timeout)方法后且未到超时时间前，如果达到超时了或被notify()了会进入BLOCKED状态
-     * 3. Thread.join(timeout)方法后
-     * 4. LockSupport.parkNanos(nanos)方法后
-     * 5. LockSupport.parkUntil(deadline)方法后
-     */
-    TIMED_WAITING,
-
-    /**
-     * 终止状态，线程已经执行完毕
-     */
-    TERMINATED;
+public ThreadPoolExecutor(int corePoolSize,
+                          int maximumPoolSize,
+                          long keepAliveTime,
+                          TimeUnit unit,
+                          BlockingQueue&lt;Runnable&gt; workQueue,
+                          ThreadFactory threadFactory,
+                          RejectedExecutionHandler handler) {
+    if (corePoolSize &lt; 0 ||
+        maximumPoolSize &lt;= 0 ||
+        maximumPoolSize &lt; corePoolSize ||
+        keepAliveTime &lt; 0)
+        throw new IllegalArgumentException();
+    if (workQueue == null || threadFactory == null || handler == null)
+        throw new NullPointerException();
+    this.acc = System.getSecurityManager() == null ?
+            null :
+            AccessController.getContext();
+    this.corePoolSize = corePoolSize;
+    this.maximumPoolSize = maximumPoolSize;
+    this.workQueue = workQueue;
+    this.keepAliveTime = unit.toNanos(keepAliveTime);
+    this.threadFactory = threadFactory;
+    this.handler = handler;
 }</code></pre>
-<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><p>线程生命周期中各状态的注释完毕了，下面我们再来看看各状态之间的流转：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="/images/pasted-23.png" alt=""></p>
-<p>（1）为了方便讲解，我们把锁分成两大类，一类是synchronized锁，一类是基于AQS的锁（我们拿重入锁举例），也就是内部使用了LockSupport.park()/parkNanos()/parkUntil()几个方法的锁；</p>
-<p>（2）不管是synchronized锁还是基于AQS的锁，内部都是分成两个队列，一个是同步队列（AQS的队列），一个是等待队列（Condition的队列）；</p>
-<p>（3）对于内部调用了object.wait()/wait(timeout)或者condition.await()/await(timeout)方法，线程都是先进入等待队列，被notify()/signal()或者超时后，才会进入同步队列；</p>
-<p>（4）明确声明，BLOCKED状态只有线程处于synchronized的同步队列的时候才会有这个状态，其它任何情况都跟这个状态无关；</p>
-<p>（5）对于synchronized，线程执行synchronized的时候，如果立即获得了锁（没有进入同步队列），线程处于RUNNABLE状态；</p>
-<p>（6）对于synchronized，线程执行synchronized的时候，如果无法获得锁（直接进入同步队列），线程处于BLOCKED状态；</p>
-<p>（5）对于synchronized内部，调用了object.wait()之后线程处于WAITING状态（进入等待队列）；</p>
-<p>（6）对于synchronized内部，调用了object.wait(timeout)之后线程处于TIMED_WAITING状态（进入等待队列）；</p>
-<p>（7）对于synchronized内部，调用了object.wait()之后且被notify()了，如果线程立即获得了锁（也就是没有进入同步队列），线程处于RUNNABLE状态；</p>
-<p>（8）对于synchronized内部，调用了object.wait(timeout)之后且被notify()了，如果线程立即获得了锁（也就是没有进入同步队列），线程处于RUNNABLE状态；</p>
-<p>（9）对于synchronized内部，调用了object.wait(timeout)之后且超时了，这时如果线程正好立即获得了锁（也就是没有进入同步队列），线程处于RUNNABLE状态；</p>
-<p>（10）对于synchronized内部，调用了object.wait()之后且被notify()了，如果线程无法获得锁（也就是进入了同步队列），线程处于BLOCKED状态；</p>
-<p>（11）对于synchronized内部，调用了object.wait(timeout)之后且被notify()了或者超时了，如果线程无法获得锁（也就是进入了同步队列），线程处于BLOCKED状态；</p>
-<p>（12）对于重入锁，线程执行lock.lock()的时候，如果立即获得了锁（没有进入同步队列），线程处于RUNNABLE状态；</p>
-<p>（13）对于重入锁，线程执行lock.lock()的时候，如果无法获得锁（直接进入同步队列），线程处于WAITING状态；</p>
-<p>（14）对于重入锁内部，调用了condition.await()之后线程处于WAITING状态（进入等待队列）；</p>
-<p>（15）对于重入锁内部，调用了condition.await(timeout)之后线程处于TIMED_WAITING状态（进入等待队列）；</p>
-<p>（16）对于重入锁内部，调用了condition.await()之后且被signal()了，如果线程立即获得了锁（也就是没有进入同步队列），线程处于RUNNABLE状态；</p>
-<p>（17）对于重入锁内部，调用了condition.await(timeout)之后且被signal()了，如果线程立即获得了锁（也就是没有进入同步队列），线程处于RUNNABLE状态；</p>
-<p>（18）对于重入锁内部，调用了condition.await(timeout)之后且超时了，这时如果线程正好立即获得了锁（也就是没有进入同步队列），线程处于RUNNABLE状态；</p>
-<p>（19）对于重入锁内部，调用了condition.await()之后且被signal()了，如果线程无法获得锁（也就是进入了同步队列），线程处于WAITING状态；</p>
-<p>（20）对于重入锁内部，调用了condition.await(timeout)之后且被signal()了或者超时了，如果线程无法获得锁（也就是进入了同步队列），线程处于WAITING状态；</p>
-<p>（21）对于重入锁，如果内部调用了condition.await()之后且被signal()之后依然无法获取锁的，其实经历了两次WAITING状态的切换，一次是在等待队列，一次是在同步队列；</p>
-<p>（22）对于重入锁，如果内部调用了condition.await(timeout)之后且被signal()或超时了的，状态会有一个从TIMED_WAITING切换到WAITING的过程，也就是从等待队列进入到同步队列；</p>
-<h2 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h2><p>看完上面的部分，你肯定想知道怎么去验证，下面就说说验证的方法，先给出测试用例。</p>
-<pre><code class="java">public class ThreadLifeTest {
-    public static void main(String[] args) throws IOException {
-        Object object = new Object();
-        ReentrantLock lock = new ReentrantLock();
-        Condition condition = lock.newCondition();
-
-        new Thread(()-&gt;{
-            synchronized (object) {
-                try {
-                    System.out.println("thread1 waiting");
-                    object.wait();
-//                    object.wait(5000);
-                    System.out.println("thread1 after waiting");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, "Thread1").start();
-
-        new Thread(()-&gt;{
-            synchronized (object) {
-                try {
-                    System.out.println("thread2 notify");
-                    // 打开或关闭这段注释，观察Thread1的状态
-//                    object.notify();【本文由公从号“彤哥读源码”原创】
-                    // notify之后当前线程并不会释放锁，只是被notify的线程从等待队列进入同步队列
-                    // sleep也不会释放锁
-                    Thread.sleep(10000000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, "Thread2").start();
-
-        new Thread(()-&gt;{
-            lock.lock();
-            System.out.println("thread3 waiting");
-            try {
-                condition.await();
-//                condition.await(200, (TimeUnit).SECONDS);
-                System.out.println("thread3 after waiting");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                lock.unlock();
-            }
-        }, "Thread3").start();
-
-        new Thread(()-&gt;{
-            lock.lock();
-            System.out.println("thread4");
-            // 打开或关闭这段注释，观察Thread3的状态
-//            condition.signal();【本文由公从号“彤哥读源码”原创】
-            // signal之后当前线程并不会释放锁，只是被signal的线程从等待队列进入同步队列
-            // sleep也不会释放锁
-            try {
-                Thread.sleep(1000000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                lock.unlock();
-            }
-        }, "Thread4").start();
-
-    }
+<p>ThreadPoolExecutor有四个构造方法，其中前三个最终都是调用最后一个，它有7个参数，分别为corePoolSize、maximumPoolSize、keepAliveTime、unit、workQueue、threadFactory、handler。</p>
+<h2 id="corePoolSize"><a href="#corePoolSize" class="headerlink" title="corePoolSize"></a>corePoolSize</h2><p>核心线程数。</p>
+<p>当正在运行的线程数小于核心线程数时，来一个任务就创建一个核心线程；</p>
+<p>当正在运行的线程数大于或等于核心线程数时，任务来了先不创建线程而是丢到任务队列中。</p>
+<h2 id="maximumPoolSize"><a href="#maximumPoolSize" class="headerlink" title="maximumPoolSize"></a>maximumPoolSize</h2><p>最大线程数。</p>
+<p>当任务队列满了时【本篇文章由公众号“彤哥读源码”原创】，来一个任务才创建一个非核心线程，但不能超过最大线程数。</p>
+<h2 id="keepAliveTime-unit"><a href="#keepAliveTime-unit" class="headerlink" title="keepAliveTime + unit"></a>keepAliveTime + unit</h2><p>线程保持空闲时间及单位。</p>
+<p>默认情况下，此两参数仅当正在运行的线程数大于核心线程数时才有效，即只针对非核心线程。</p>
+<p>但是，如果allowCoreThreadTimeOut被设置成了true，针对核心线程也有效。</p>
+<p>即当任务队列为空时，线程保持多久才会销毁，内部主要是通过阻塞队列带超时的poll(timeout, unit)方法实现的。</p>
+<h2 id="workQueue"><a href="#workQueue" class="headerlink" title="workQueue"></a>workQueue</h2><p>任务队列。</p>
+<p>当正在运行的线程数大于或等于核心线程数时，任务来了是先进入任务队列中的。</p>
+<p>这个队列必须是阻塞队列，所以像ConcurrentLinkedQueue就不能作为参数，因为它虽然是并发安全的队列，但是它不是阻塞队列。</p>
+<pre><code class="java">// ConcurrentLinkedQueue并没有实现BlockingQueue接口
+public class ConcurrentLinkedQueue&lt;E&gt; extends AbstractQueue&lt;E&gt;
+        implements Queue&lt;E&gt;, java.io.Serializable {
 }</code></pre>
-<p>打开或关闭上面注释部分的代码，使用IDEA的RUN模式运行代码，然后点击左边的一个摄像头按钮(jstack)，查看各线程的状态。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="/images/pasted-24.png" alt=""></p>
-<p>注：不要使用DEBUG模式，DEBUG模式全都变成WAITING状态了，很神奇。</p>
+<h2 id="threadFactory"><a href="#threadFactory" class="headerlink" title="threadFactory"></a>threadFactory</h2><p>线程工厂。</p>
+<p>默认使用的是Executors工具类中的DefaultThreadFactory类，这个类有个缺点，创建的线程的名称是自动生成的，无法自定义以区分不同的线程池，且它们都是非守护线程。</p>
+<pre><code class="java">static class DefaultThreadFactory implements ThreadFactory {
+        private static final AtomicInteger poolNumber = new AtomicInteger(1);
+        private final ThreadGroup group;
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+        private final String namePrefix;
+
+        DefaultThreadFactory() {
+            SecurityManager s = System.getSecurityManager();
+            group = (s != null) ? s.getThreadGroup() :
+                                  Thread.currentThread().getThreadGroup();
+            namePrefix = "pool-" +
+                          poolNumber.getAndIncrement() +
+                         "-thread-";
+        }
+
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(group, r,
+                                  namePrefix + threadNumber.getAndIncrement(),
+                                  0);
+            if (t.isDaemon())
+                t.setDaemon(false);
+            if (t.getPriority() != Thread.NORM_PRIORITY)
+                t.setPriority(Thread.NORM_PRIORITY);
+            return t;
+        }
+    }</code></pre>
+<p>那怎么自定义一个线程工厂呢？</p>
+<p>其实也很简单，自己实现一个ThreadFactory，然后把名称和是否是守护进程当作构造方法的参数传进来就可以了。</p>
+<p>有兴趣的同学可以参考netty中的默认线程工厂或者google中的线程工厂。</p>
+<pre><code>io.netty.util.concurrent.DefaultThreadFactory
+com.google.common.util.concurrent.ThreadFactoryBuilder</code></pre><h2 id="handler"><a href="#handler" class="headerlink" title="handler"></a>handler</h2><p>拒绝策略。</p>
+<p>拒绝策略表示当任务队列满了且线程数也达到最大了，这时候再新加任务，线程池已经无法承受了，这些新来的任务应该按什么逻辑来处理。</p>
+<p>常用的拒绝策略有丢弃当前任务、丢弃最老的任务、抛出异常、调用者自己处理等待。</p>
+<p>默认的拒绝策略是抛出异常，即线程池无法承载了，调用者再往里面添加任务会抛出异常。</p>
+<p>默认的拒绝策略虽然比较简单粗暴，但是相对于丢弃任务策略明显要好很多，最起码调用者自己可以捕获这个异常再进行二次处理。</p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -720,7 +695,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://virgillone.github.io/posts/4b65.html">https://virgillone.github.io/posts/4b65.html</a>
+                    <a href="https://virgillone.github.io/posts/d08f.html">https://virgillone.github.io/posts/d08f.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -957,27 +932,28 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/8257.html">
+                <a href="/posts/3332.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/23.jpg" class="responsive-img" alt="java线程系列之线程池深入解析——生命周期">
+                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/13.jpg" class="responsive-img" alt="java线程系列之线程池深入解析——普通任务执行流程">
                         
-                        <span class="card-title">java线程系列之线程池深入解析——生命周期</span>
+                        <span class="card-title">java线程系列之线程池深入解析——普通任务执行流程</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            简介上一章我们一起重温了下线程的生命周期（六种状态还记得不？），但是你知不知道其实线程池也是有生命周期的呢？！
-问题（1）线程池的状态有哪些？
-（2）各种状态下对于任务队列中的任务有何影响？
-先上源码其实，在我们讲线程池体系结构的时候，讲了
+                            问题（1）线程池中的普通任务是怎么执行的？
+（2）任务又是在哪里被执行的？
+（3）线程池中有哪些主要的方法？
+（4）如何使用Debug模式一步一步调试线程池？
+使用案例我们创建一个线程池，它的核心数量为5，最大数量为10，空闲时间为1秒，队
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-14
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-04
                         </span>
                         <span class="publish-author">
                             
@@ -1013,32 +989,34 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/8c27.html">
+                <a href="/posts/8257.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/23.jpg" class="responsive-img" alt="详解Java中4种IO模型">
+                        <img src="https://cdn.jsdelivr.net/gh/virgillone/cdn@master/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/virgillone/cdn/medias/featureimages/23.jpg" class="responsive-img" alt="java线程系列之线程池深入解析——生命周期">
                         
-                        <span class="card-title">详解Java中4种IO模型</span>
+                        <span class="card-title">java线程系列之线程池深入解析——生命周期</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            同步、异步、阻塞、非阻塞都是和I/O（输入输出）有关的概念，最简单的文件读取就是I/O操作。而在文件读取这件事儿上，可以有多种方式。
-本篇会先介绍一下I/O的基本概念，通过一个生活例子来分别解释下这几种I/O模型，以及Java支持的I/O模
+                            简介上一章我们一起重温了下线程的生命周期（六种状态还记得不？），但是你知不知道其实线程池也是有生命周期的呢？！
+问题（1）线程池的状态有哪些？
+（2）各种状态下对于任务队列中的任务有何影响？
+先上源码其实，在我们讲线程池体系结构的时候，讲了
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-23
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-14
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/java/" class="post-category">
-                                    java
+                            <a href="/categories/thread/" class="post-category">
+                                    thread
                                 </a>
                             
                             
@@ -1048,12 +1026,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/IO/">
-                        <span class="chip bg-color">IO</span>
+                    <a href="/tags/java/">
+                        <span class="chip bg-color">java</span>
                     </a>
                     
-                    <a href="/tags/Linux/">
-                        <span class="chip bg-color">Linux</span>
+                    <a href="/tags/thread/">
+                        <span class="chip bg-color">thread</span>
                     </a>
                     
                 </div>
