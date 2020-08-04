@@ -890,7 +890,7 @@ private final class Worker
 <p>（1）execute()，提交任务的方法，根据核心数量、任务队列大小、最大数量，分成四种情况判断任务应该往哪去；</p>
 <p>（2）addWorker()，添加工作线程的方法，通过Worker内部类封装一个Thread实例维护工作线程的执行；</p>
 <p>（3）runWorker()，真正执行任务的地方，先执行第一个任务，再源源不断从任务队列中取任务来执行；</p>
-<p>（4）getTask()，真正从队列取任务的地方，默认情况下，根据工作线程数量与核心数量的关系判断使用队列的poll()还是take()方法，keepAliveTime参数也是在这里使用的。</p>
+<p>（4）getTask()，真正从队列取任务的地方，默认情况下，<strong>根据工作线程数量与核心数量的关系判断使用队列的poll()还是take()方法，keepAliveTime参数也是在这里使用的。</strong></p>
 <h2 id="彩蛋"><a href="#彩蛋" class="headerlink" title="彩蛋"></a>彩蛋</h2><p><strong>核心线程和非核心线程有什么区别？</strong></p>
 <p>答：实际上并没有什么区别，主要是根据corePoolSize来判断任务该去哪里，两者在执行任务的过程中并没有任何区别。有可能新建的时候是核心线程，而keepAliveTime时间到了结束了的也可能是刚开始创建的核心线程。</p>
 <p><strong>Worker继承自AQS有何意义？</strong></p>
@@ -921,7 +921,7 @@ private final class Worker
 <p>一般来说，interruptIdleWorkers()方法的调用不是在本工作线程，而是在主线程中调用的，还记得《死磕 java线程系列之线程池深入解析——生命周期》中说过的shutdown()和shutdownNow()方法吗？</p>
 <p>观察两个方法中中断线程的方法，shutdown()中就是调用了interruptIdleWorkers()方法，这里tryLock()获取到锁了再中断，如果没有获取到锁则不中断，没获取到锁只有一种情况，也就是lock()所在的地方，也就是有任务正在执行。</p>
 <p>而shutdownNow()中中断线程则很暴力，并没有tryLock()，而是直接中断了线程，所以调用shutdownNow()可能会中断正在执行的任务。</p>
-<p>所以，Worker继承自AQS实际是要使用其锁的能力，这个锁主要是用来控制shutdown()时不要中断正在执行任务的线程。</p>
+<p>所以，Worker继承自AQS实际是要使用其锁的能力，<strong>这个锁主要是用来控制shutdown()时不要中断正在执行任务的线程。</strong></p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
